@@ -1,0 +1,4 @@
+sklearn
+Flask
+python-dotenv
+face_recognition
