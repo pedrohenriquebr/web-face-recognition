@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: web_face_recognition:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/root/face_recognition:ro
+      - ./dataset:/dataset:ro
+      - ./modelset:/modelset:rw
+      
+
