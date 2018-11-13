@@ -7,7 +7,7 @@ from sklearn import neighbors
 import os.path
 import pickle
 import sys
-
+import settings
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
 	"""
@@ -93,7 +93,7 @@ def main(argv):
 	#	cnn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('CNN_MODEL'))
 	#	classifier = training.train(train_folder, model_save_path=cnn_model, n_neighbors=1,verbose=True,model='cnn')
 	knn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-	classifier = training.train(train_folder, model_save_path=knn_model, n_neighbors=n_neighbors,verbose=True,model=model)
+	classifier = train(train_folder, model_save_path=knn_model, n_neighbors=n_neighbors,verbose=True,model=model)
 
 
 if __name__ == "__main__":
