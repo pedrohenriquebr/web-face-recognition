@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, request, redirect
+from flask import Flask, jsonify, request, redirect, render_template
 from werkzeug.utils import secure_filename
 import training 
 import prediction
 import face_recognition
 import os
+import settings
+
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -53,44 +55,16 @@ def upload_image():
 			# The image file seems valid! Detect faces and return the result.
 			return detect_faces_in_image(file)
 
-	# If no valid image file was uploaded, show the file upload form:
-	return '''
-	<!doctype html>
-	<title>Reconhecimento Facial com KNN!!</title>
-	<h1>Envie uma imagem para o reconhecimento facial !</h1>
-	<form method="POST" enctype="multipart/form-data">
-	  <input type="file" name="file">
-	  <input type="submit" value="Upload">
-	</form>
-	'''
+	return render_template('index.html')
 
 
 def detect_faces_in_image(file_stream,model='hog'):
 	img  = face_recognition.load_image_file(file_stream)
-	if model == 'cnn':
-		classifier_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('CNN_MODEL'))
-	else:
-		classifier_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
+	classifier_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
 		
 	result = prediction.predict_frame(img,model_path=classifier_model,model=model)
 	return jsonify(result)		   
 
-@app.route("/train")
-def train_dataset():
-	train_folder = os.getenv('DATASET_DIR')
-	model = request.values['model']
-
-	if model == None:
-		model = 'hog'
-
-	if model == 'cnn':
-		cnn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('CNN_MODEL'))
-		classifier = training.train(train_folder, model_save_path=cnn_model, n_neighbors=1,verbose=True,model='cnn')
-	else:
-		knn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-		classifier = training.train(train_folder, model_save_path=knn_model, n_neighbors=1,verbose=True)
-
-	return 'Treinamento completo !!'
 
 	
 if __name__ == "__main__":
