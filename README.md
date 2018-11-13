@@ -17,15 +17,19 @@
     baixe, descomprima e coloque as pastas dentro de dataset
 
 ## Variáveis de ambiente 
+  
   * `DATASET_DIR` 
   
     diretório da base de dados para treinamento
+
   * `MODELSET_DIR` 
   
     diretório de classificadores salvos e treinados
+
   * `KNN_MODEL` 
   
     nome do arquivo do modelo de classificador KNN 
+    
   * `N_NEIGHBORS`
   
     particularidade do KNN se não estiver declarado, n_neighbors assumirá o 
