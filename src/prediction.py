@@ -67,7 +67,6 @@ def predict_frame(X_img_frame, knn_clf=None, model_path=None, distance_threshold
 
 	return result
 
-
 def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6,model='hog'):
 	"""
 	Recognizes faces in given image using a trained KNN classifier

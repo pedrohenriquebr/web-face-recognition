@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import os
-from os import environ as env
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 import math
@@ -77,12 +76,25 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 
 	return knn_clf
 	
-	
 def main(argv):
 	train_folder = os.getenv('DATASET_DIR')
+	model = os.getenv('FACE_DETECTION_MODEL','hog')
+	n_neighbors = os.getenv('N_NEIGHBORS')
+
+	if n_neighbors != None:
+	# tento converter para inteiro
+		try:
+			n_neighbors = int(n_neighbors)
+		except:
+			n_neighbors = 1
+
+	# futuramente posso precisar
+	#if model == 'cnn':
+	#	cnn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('CNN_MODEL'))
+	#	classifier = training.train(train_folder, model_save_path=cnn_model, n_neighbors=1,verbose=True,model='cnn')
 	knn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-	classifier = train(train_folder, model_save_path=knn_model, n_neighbors=1,verbose=True)
-	
+	classifier = training.train(train_folder, model_save_path=knn_model, n_neighbors=n_neighbors,verbose=True,model=model)
+
 
 if __name__ == "__main__":
 	print("Iniciando treinamento...")
