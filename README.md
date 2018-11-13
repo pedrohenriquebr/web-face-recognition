@@ -3,8 +3,8 @@
 ## Instalação
 
 ### Requisitos
-  * Docker 18.06.1-ce 
-  * Docker Compose 1.23.0-rc3
+  * Docker 18.06+
+  * Docker Compose 1.23.0-rc3+
   * Python 3.3+ ou Python 2.7
   * Linux 
 
