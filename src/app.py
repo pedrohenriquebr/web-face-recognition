@@ -28,7 +28,7 @@ def face_recognition_api():
 		model = request.values['model']  # por padrão será o Hog
 
 		if model == None:
-			model= 'hog'
+			model = os.getenv('FACE_DETECTION_MODEL','hog')
 		
 		if file.filename == '':
 			return redirect(request.url)
@@ -53,7 +53,7 @@ def upload_image():
 
 		if file and allowed_file(file.filename):
 			# The image file seems valid! Detect faces and return the result.
-			return detect_faces_in_image(file)
+			return detect_faces_in_image(file,model=os.getenv('FACE_DETECTION_MODEL','hog'))
 
 	return render_template('index.html')
 
@@ -62,7 +62,7 @@ def detect_faces_in_image(file_stream,model='hog'):
 	img  = face_recognition.load_image_file(file_stream)
 	classifier_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
 		
-	result = prediction.predict_frame(img,model_path=classifier_model,model=model)
+	result = prediction.predict_frame(img,model_path=classifier_model,model='cnn')
 	return jsonify(result)		   
 
 

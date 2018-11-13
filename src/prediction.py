@@ -5,12 +5,12 @@ import os
 from os import environ
 import os.path
 import pickle
-from PIL import Image, ImageDraw
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 import sys
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+THRESHOLD = bool(os.getenv('THRESHOLD'))
 
 def predict_frame(X_img_frame, knn_clf=None, model_path=None, distance_threshold=0.6,model='hog'):
 	"""
@@ -39,8 +39,6 @@ def predict_frame(X_img_frame, knn_clf=None, model_path=None, distance_threshold
 
 	# Load image file and find face locations
 	X_face_locations = face_recognition.face_locations(X_img_frame,model=model)
-
-	THRESHOLD=os.getenv('THRESHOLD')
 	
 	# If no faces are found in the image, return an empty result.
 	if len(X_face_locations) == 0:
@@ -61,7 +59,7 @@ def predict_frame(X_img_frame, knn_clf=None, model_path=None, distance_threshold
 	# Predict classes and remove classifications that aren't within the threshold
 	result = []
 	if THRESHOLD:
-		result  = [(pred, loc) if rec else (os.environ.get('UNKNOWN_LABLE','unkown'), loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
+		result  = [(pred, loc) if rec else (os.getenv('UNKNOWN_LABEL','unkown'), loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 	else:
 		result  = [(pred, loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 
@@ -114,7 +112,7 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6,mo
 	# Predict classes and remove classifications that aren't within the threshold
 	result = []
 	if THRESHOLD:
-		result  = [(pred, loc) if rec else (os.environ.get('UNKNOWN_LABLE','unkown'), loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
+		result  = [(pred, loc) if rec else (os.getenv('UNKNOWN_LABLE','unkown'), loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 	else:
 		result  = [(pred, loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 
