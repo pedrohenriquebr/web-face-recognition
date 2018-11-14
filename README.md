@@ -15,7 +15,6 @@
   * [Dataset](https://drive.google.com/drive/folders/1QcVSeMT2tGXO-oMZkyBhuDGqBgmXRBmh?usp=sharing)
   
     baixe, descomprima e coloque as pastas dentro de dataset
-
 ## Variáveis de ambiente 
   
   * `DATASET_DIR` 
@@ -55,9 +54,10 @@ o valor `1`
 
     flag para usar limiar no algoritmo K-NN (não funcional)
 
-
-
+#### Sugestões de leitura
+* [Docker Curriculum](https://docker-curriculum.com/)
+  
 #### Referências bibliográficas
-  * [Face Recognition](https://github.com/ageitgey/face_recognition)
+* [Face Recognition](https://github.com/ageitgey/face_recognition)
   
 
