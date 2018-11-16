@@ -1,7 +1,39 @@
 <!doctype html>
+<script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#btn_upload").on('click',
+            function () {
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+                $.ajax({
+                    url: "/api/recognition", // url where to submit the request
+                    type: "POST", // type of action POST || GET
+                    dataType: 'json', // data type
+                    data: formData, // post data || get data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        var json = JSON.stringify(result);
+                        $("#resultado").html(json);
+                        
+                    },
+                    error: function (xhr, resp, text) {
+                        console.log(xhr, resp, text);
+                    }
+                });
+            });
+        });
+
+</script>
+
 <title>Reconhecimento Facial com KNN!!</title>
 <h1>Envie uma imagem para o reconhecimento facial !</h1>
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <input type="submit" value="Upload">
-</form>
+<div>
+    <input type="file" name="file" id="file">
+    <input type="button" value="Upload" id="btn_upload">
+</div>
+
+<div id="resultado">
+
+</div>
