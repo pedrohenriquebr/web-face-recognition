@@ -82,11 +82,11 @@ $ docker build -t web_face_recognition .
 Utilize o Compose para rodar os contêineres:
 * Para ambiente de produção:
 ```bash
-$ docker-compose up -d --build -f docker-compose.prod.yml
+$ docker-compose -f docker-compose.prod.yml up -d --build 
 ```
 * Para ambiente de desenvolvimento:
 ```bash
-$ docker-compose up -d --build -f docker-compose.dev.yml
+$ docker-compose -f docker-compose.dev.yml up -d --build 
 ```
 
 #### Sugestões de leitura
