@@ -47,6 +47,7 @@ o valor `1`
   * `FACE_DETECTION_MODEL`
   
     modelo de detecção de faces a ser utilizado, pode assumir os seguintes valores:
+    
     - `hog` (valor padrão)
     - `cnn` (rede neural treinada, pode ser usado com KNN)
 
@@ -80,6 +81,7 @@ $ docker build -t web_face_recognition .
 ```
 
 Utilize o Compose para rodar os contêineres:
+
 * Para ambiente de produção:
 ```bash
 $ docker-compose -f docker-compose.prod.yml up -d --build 
