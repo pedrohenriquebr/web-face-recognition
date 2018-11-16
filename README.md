@@ -6,15 +6,19 @@
   * Docker 18.06+
   * Docker Compose 1.23.0-rc3+
   * Python 3.3+ ou Python 2.7
-  * Linux 
+  * Linux
+  * Git
 
 ### Instalação de dependências
   * [Instalando Docker e Compose](https://gist.github.com/pedrohenriquebr/5c0676e74ade52d1e8ae676835dccb08)
+  * [Instalando Git](https://git-scm.com/book/pt-br/v1/Primeiros-passos-Instalando-Git)
+
 
 ### Amostra de base de dados
   * [Dataset](https://drive.google.com/drive/folders/1QcVSeMT2tGXO-oMZkyBhuDGqBgmXRBmh?usp=sharing)
   
-    baixe, descomprima e coloque as pastas dentro de dataset
+    baixe, descomprima e coloque as pastas dentro de `dataset`
+
 ## Variáveis de ambiente 
   
   * `DATASET_DIR` 
@@ -43,7 +47,7 @@ o valor `1`
   * `FACE_DETECTION_MODEL`
   
     modelo de detecção de faces a ser utilizado, pode assumir os seguintes valores:
-    - `hog`
+    - `hog` (valor padrão)
     - `cnn` (rede neural treinada, pode ser usado com KNN)
 
   * `UNKNOWN_LABEL`
@@ -52,12 +56,42 @@ o valor `1`
 
   * `THRESHOLD`
 
-    flag para usar limiar no algoritmo K-NN (não funcional)
+    flag para usar limiar no algoritmo K-NN (não funcional
+
+### Guia
+Clone o repositório: 
+```bash 
+$ git clone https://bitbucket.org/nupemteam/face_recognition.git
+```
+ou clone já com seu usuário:
+```bash
+$ git clone https://<usuario>@bitbucket.org/nupemteam/face_recognition.git
+```
+Construa a imagem base do face_recognition:
+```bash
+$ cd base_face_recognition
+$ docker build -t base_face_recognition .
+```
+
+Construa a imagem base para web de face_recognition:
+```bash
+$ cd ../
+$ docker build -t web_face_recognition . 
+```
+
+Utilize o Compose para rodar os contêineres:
+* Para ambiente de produção:
+```bash
+$ docker-compose up -d --build docker-compose.prod.yml
+```
+* Para ambiente de desenvolvimento:
+```bash
+$ docker-compose up -d --build docker-compose.dev.yml
+```
 
 #### Sugestões de leitura
 * [Docker Curriculum](https://docker-curriculum.com/)
-  
-#### Referências bibliográficas
 * [Face Recognition](https://github.com/ageitgey/face_recognition)
+* [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
   
 
