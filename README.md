@@ -94,6 +94,7 @@ $ docker-compose -f docker-compose.dev.yml up -d --build
 #### Sugestões de leitura
 * [Docker Curriculum](https://docker-curriculum.com/)
 * [Face Recognition](https://github.com/ageitgey/face_recognition)
+* [Face Recognitino API Documentation](https://face-recognition.readthedocs.io/en/latest/face_recognition.html)
 * [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
   
 
