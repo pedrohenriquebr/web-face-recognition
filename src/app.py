@@ -33,13 +33,12 @@ def face_recognition_api():
 			return redirect(request.url)
 
 		if file and allowed_file(file.filename):
-			# The image file seems valid! Detect faces and return the result.
 			return detect_faces_in_image(file,model=model)
 	
 
 
 @app.route('/', methods=['GET'])
-def upload_image():
+def index():
 	return render_template('index.html')
 
 
