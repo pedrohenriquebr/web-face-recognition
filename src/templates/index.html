@@ -1,6 +1,7 @@
 <!doctype html>
 <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
-
+<link rel="stylesheet" href="{{url_for('static',filename='pretty_print.css')}}">
+<link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
 <canvas id="imageCanvas"></canvas><script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
 
 <title>Servidor de reconhecimento facial !</title>
@@ -14,16 +15,14 @@
 
 
     <table>
-        <tr>
 
         </tr>
-        <tr>Image</tr>
-        <tr>Resultado</tr>
+        <th>Image</th>
+        <th>Resultado</th>
         </tr>
         <tr>
             <td>
                 <canvas id="imageCanvas" style="display: none;"></canvas>
-                <img id="canvasImg" alt="Right click to save me!"></img>
             </td>
             <td>
                 <pre id='resultado'> </pre>
