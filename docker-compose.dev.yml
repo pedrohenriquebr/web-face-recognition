@@ -5,7 +5,7 @@ services:
     ports:
       - 5002:5000
     volumes:
-      - ./src:/root/face_recognition
+      - ./src:/root/face_recognition:ro
       - ./dataset:/dataset:ro
       - ./modelset:/modelset:rw
       
