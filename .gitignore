@@ -1,2 +1,3 @@
 dataset/*
 modelset/*
+*__pycache__/*

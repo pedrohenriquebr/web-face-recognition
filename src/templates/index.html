@@ -1,39 +1,33 @@
 <!doctype html>
 <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
-<script type="text/javascript">
-    $(function () {
-        $("#btn_upload").on('click',
-            function () {
-                var formData = new FormData();
-                formData.append('file', $('#file')[0].files[0]);
-                $.ajax({
-                    url: "/api/recognition", // url where to submit the request
-                    type: "POST", // type of action POST || GET
-                    dataType: 'json', // data type
-                    data: formData, // post data || get data,
-                    processData: false,
-                    contentType: false,
-                    success: function (result) {
-                        var json = JSON.stringify(result);
-                        $("#resultado").html(json);
-                        
-                    },
-                    error: function (xhr, resp, text) {
-                        console.log(xhr, resp, text);
-                    }
-                });
-            });
-        });
 
-</script>
+<canvas id="imageCanvas"></canvas><script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
 
-<title>Reconhecimento Facial com KNN!!</title>
+<title>Servidor de reconhecimento facial !</title>
 <h1>Envie uma imagem para o reconhecimento facial !</h1>
 <div>
-    <input type="file" name="file" id="file">
-    <input type="button" value="Upload" id="btn_upload">
+    <input type="file" name="file" id="imageLoader">
+    <!-- <input type="button" value="Upload" id="btn_upload"> -->
 </div>
 
-<div id="resultado">
+<div>
 
+
+    <table>
+        <tr>
+
+        </tr>
+        <tr>Image</tr>
+        <tr>Resultado</tr>
+        </tr>
+        <tr>
+            <td>
+                <canvas id="imageCanvas" style="display: none;"></canvas>
+                <img id="canvasImg" alt="Right click to save me!"></img>
+            </td>
+            <td>
+                <pre id='resultado'> </pre>
+            </td>
+        </tr>
+    </table>
 </div>
