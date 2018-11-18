@@ -3,9 +3,9 @@ services:
   web:
     image: web_face_recognition:latest
     ports:
-      - 5000:5000
+      - 5002:5000
     volumes:
-      - ./src:/root/face_recognition:ro
+      - ./src:/root/face_recognition
       - ./dataset:/dataset:ro
       - ./modelset:/modelset:rw
       
