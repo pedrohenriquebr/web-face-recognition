@@ -4,7 +4,7 @@
 
 ### Requisitos
   * Docker 18.06+
-  * Docker Compose 1.23.0-rc3+
+  * Docker Compose 1.23.1+
   * Python 3.3+ ou Python 2.7
   * Linux
   * Git
@@ -35,9 +35,9 @@
     
   * `N_NEIGHBORS`
   
-    particularidade do KNN se não estiver declarado, n_neighbors assumirá o 
-    valor da raíz quadrada do número de indivíduos no dataset
-se não for um valor válido, n_neighbors assumirá
+    particularidade do KNN se não estiver declarado, `n_neighbors` assumirá 
+    `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo;
+se não for um valor válido, `n_neighbors` assumirá
 o valor `1` 
 
   * `CNN_MODEL`
@@ -93,8 +93,11 @@ $ docker-compose -f docker-compose.dev.yml up -d --build
 
 #### Sugestões de leitura
 * [Docker Curriculum](https://docker-curriculum.com/)
+* [Compose file version 3 Reference](https://docs.docker.com/compose/compose-file/)
+* [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
 * [Face Recognition](https://github.com/ageitgey/face_recognition)
 * [Face Recognitino API Documentation](https://face-recognition.readthedocs.io/en/latest/face_recognition.html)
-* [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
+
+
   
 
