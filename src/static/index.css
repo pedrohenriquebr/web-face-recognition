@@ -1,8 +1,23 @@
-#resultado pre {
+#resultado {
+    margin-top: 10px;
+    margin-left: 140px;
     overflow: auto;
     background-color: #eeeeee;
-    width: 500px;
+    width: 279px;
     height: 345px;
 }
 
-​
+#canvasImg {
+    margin-left: 60px;
+    /*padding: 0px; parece que não surge efeito */
+    max-width: 600px;
+    max-height: 345px;
+}
+
+#container{
+    margin: 100px;
+}
+
+#bemvindo {
+    margin: 40px;
+}

@@ -2,31 +2,35 @@
 <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
 <link rel="stylesheet" href="{{url_for('static',filename='pretty_print.css')}}">
 <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
-<canvas id="imageCanvas"></canvas><script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
-
+<script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
 <title>Servidor de reconhecimento facial !</title>
-<h1>Envie uma imagem para o reconhecimento facial !</h1>
-<div>
-    <input type="file" name="file" id="imageLoader">
-    <!-- <input type="button" value="Upload" id="btn_upload"> -->
+<center>
+<h1 id="bemvindo" >Envie uma imagem para o reconhecimento facial !</h1>
+</center>
+
+<div id="container">
+    <center>
+        <table>
+
+            </tr>
+            <th>Imagem</th>
+            <th>Resultado em JSON</th>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id="imageCanvas" style="display:none;"></canvas>
+                    <img id="canvasImg" alt="carregue uma foto!"></img>
+                </td>
+                <td>
+                    <pre id='resultado'> </pre>
+                </td>
+            </tr>
+        </table>
+    </center>
 </div>
 
 <div>
-
-
-    <table>
-
-        </tr>
-        <th>Image</th>
-        <th>Resultado</th>
-        </tr>
-        <tr>
-            <td>
-                <canvas id="imageCanvas" style="display: none;"></canvas>
-            </td>
-            <td>
-                <pre id='resultado'> </pre>
-            </td>
-        </tr>
-    </table>
+    <center>
+        <input type="file" name="file" id="imageLoader">
+    </center>
 </div>
