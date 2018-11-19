@@ -1,3 +1,4 @@
 dataset/*
 modelset/*
 *__pycache__/*
+*.pyc
