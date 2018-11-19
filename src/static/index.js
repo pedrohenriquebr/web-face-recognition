@@ -1,6 +1,14 @@
 var canvas = null;
 var ctx = null;
 var default_scale = 1;
+var json_result = null;
+var array_obj = null;
+var img_tag = null;
+var big_picture = false;
+var msg = null;
+var n_persons = 0;
+
+
 
 var JSON_PRETTY = function (string) {
 
@@ -67,6 +75,9 @@ $(function () {
   //https://www.w3schools.com/tags/canvas_drawimage.asp
   var imageLoader = $('#imageLoader')[0];
   canvas = document.getElementById('imageCanvas');
+  img_tag = document.getElementById('canvasImg');;
+  msg = $('#mensagem');
+  n_persons = 0;
   ctx = canvas.getContext('2d');
   imageLoader.addEventListener('change', handleImage, false);
 });
@@ -74,7 +85,6 @@ $(function () {
 function handleImage(e) {
   var reader = new FileReader();
   clear_all();
-  sendImage();
   reader.onload = function (event) {
     var img = new Image();
     img.onload = function () {
@@ -83,9 +93,11 @@ function handleImage(e) {
       canvas.height = img.height;
 
       if (img.height > 345) {
-        default_scale = 1.5;
+        console.log('foto grande');
+        big_picture = true;
       } else {
-        default_scale = 1;
+        big_picture = false;
+        console.log('foto dentro das margens');
       }
 
       ctx.drawImage(img, 0, 0);
@@ -93,12 +105,24 @@ function handleImage(e) {
     img.src = event.target.result;
   }
   reader.readAsDataURL(e.target.files[0]);
+  sendImage();
+
 }
 
 
 function clear_all() {
-  $("#resultado").html("");
+  $("#resultado").html(""); ""
+  msg.html("");
+  n_persons = 0;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  update_img_tag();
+  array_obj = null;
+  json_result = null;
+}
+
+function update_img_tag() {
+  var dataURL = canvas.toDataURL();
+  img_tag.src = dataURL;
 }
 
 function sendImage() {
@@ -113,13 +137,17 @@ function sendImage() {
     processData: false,
     contentType: false,
     success: function (result) {
-      var array = result;
-      var json = JSON.stringify(result);
-      console.log('Typeof: ' + typeof (array));
-      $("#resultado").html(JSON_PRETTY(json));
-      drawFaceLocation(array);
-      var dataURL = canvas.toDataURL();
-      document.getElementById('canvasImg').src = dataURL;
+      array_obj = result;
+      json_result = JSON.stringify(result);
+      console.log('Typeof: ' + typeof (array_obj));
+      $("#resultado").html(JSON_PRETTY(json_result));
+      drawFaceLocation(array_obj);
+      update_img_tag();
+      n_persons = array_obj.length;
+      msg.html('tem ' + n_persons + (n_persons > 1 ? ' pessoas' : ' pessoa'));
+    },
+    progress: function(e){
+      msg.html('aguarde um momento por favor...');
     },
     error: function (xhr, resp, text) {
       console.log(xhr, resp, text);
@@ -128,6 +156,12 @@ function sendImage() {
 }
 
 function drawFaceLocation(array) {
+
+  size = 19;
+  if (big_picture) {
+    size = 40;
+  }
+  console.log('size: ' + size);
   for (n in array) {
     var persons = array[n];
     var name = persons[0];
@@ -149,7 +183,6 @@ function drawFaceLocation(array) {
     ctx.closePath();
     ctx.stroke();
     ctx.beginPath();
-    size = 18 * default_scale;
     ctx.font = size + 'px Arial';
     ctx.fillStyle = 'red';
     ctx.textAlign = 'center';
