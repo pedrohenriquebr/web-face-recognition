@@ -5,7 +5,10 @@ var json_result = null;
 var array_obj = null;
 var img_tag = null;
 var big_picture = false;
+size = 19;
 var msg = null;
+var img_width = 0;
+var img_height = 0;
 var n_persons = 0;
 
 
@@ -91,6 +94,8 @@ function handleImage(e) {
       // se a a altura for maior do que 345px
       canvas.width = img.width;
       canvas.height = img.height;
+      img_width = img.width;
+      img_height = img.height;
 
       if (img.height > 345) {
         console.log('foto grande');
@@ -146,7 +151,7 @@ function sendImage() {
       n_persons = array_obj.length;
       msg.html('tem ' + n_persons + (n_persons > 1 ? ' pessoas' : ' pessoa'));
     },
-    progress: function(e){
+    progress: function (e) {
       msg.html('aguarde um momento por favor...');
     },
     error: function (xhr, resp, text) {
@@ -159,7 +164,7 @@ function drawFaceLocation(array) {
 
   size = 19;
   if (big_picture) {
-    size = 40;
+    size = 19 * (img_height/345);
   }
   console.log('size: ' + size);
   for (n in array) {
