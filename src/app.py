@@ -50,10 +50,12 @@ def detect_faces_in_image(file_stream,model='hog'):
 	img  = face_recognition.load_image_file(file_stream)
 	classifier_model = os.path.join(MODELSET_DIR, KNN_MODEL)
 		
-	result = prediction.predict_frame(img,model_path=classifier_model,model=model)
-
-
-	return jsonify(result)		   
+	recognition = prediction.predict_frame(img,model_path=classifier_model,model=model)
+	#landmarks  = face_recognition.face_landmarks(img)
+	#app.logger.debug(' resultado : {}'.format(result))
+	#app.logger.debug(' landmarks: {}'.format(landmarks))
+	app.logger.debug(' recognition: {}'.format(recognition))
+	return jsonify(recognition)		   
 
 
 	
