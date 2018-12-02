@@ -123,7 +123,3 @@ com as fotos da pessoa.
 * [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
 * [Face Recognition](https://github.com/ageitgey/face_recognition)
 * [Face Recognitino API Documentation](https://face-recognition.readthedocs.io/en/latest/face_recognition.html)
-
-
-  
-
