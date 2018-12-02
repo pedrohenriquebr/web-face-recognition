@@ -37,14 +37,12 @@
 
 * `KNN_MODEL`
   Nome do arquivo do modelo de classificador KNN
+  
 * `N_NEIGHBORS`
   Particularidade do KNN, se não estiver declarado, `n_neighbors` assumirá 
   `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo;
 se não for um valor válido, `n_neighbors` assumirá
 o valor `1`.
-
-* `CNN_MODEL`
-  Nome do arquivo do modelo de classificador CNN, não implementado
 
 * `FACE_DETECTION_MODEL`
   Modelo de detecção de faces a ser utilizado, pode assumir os seguintes valores:
