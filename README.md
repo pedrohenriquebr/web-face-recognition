@@ -45,6 +45,7 @@ se não for um valor válido, `n_neighbors` assumirá
 o valor `1`.
 
 * `FACE_DETECTION_MODEL`
+  
   Modelo de detecção de faces a ser utilizado, pode assumir os seguintes valores:
   * `hog` (valor padrão)
   * `cnn` (rede neural treinada, pode ser usado com KNN, não funcional)
