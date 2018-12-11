@@ -29,9 +29,9 @@ docker_compose_check
 # Isso aqui demora hein... pegue um cafézinho e tenha paciência...
 echo "Construindo imagens bases..."
 cd base_face_recognition
-docker build -t base_face_recognition .
+docker build --rm -t base_face_recognition .
 cd .. 
-docker build -t web_face_recognition  .
+docker build --rm -t web_face_recognition  .
 
 echo "Imagens bases construídas com sucesso!"
 
