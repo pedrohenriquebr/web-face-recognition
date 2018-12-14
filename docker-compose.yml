@@ -3,6 +3,6 @@ services:
   web:
     image: web_face_recognition:latest
     ports:
-      - 5001:5000
+      - 5002:5000
       
 
