@@ -95,7 +95,7 @@ Utilize o Compose para rodar os contêineres:
 Para ambiente de produção:
 
 ```bash
-docker-compose -f docker-compose.prod.yml up -d --build 
+docker-compose -f docker-compose.yml up -d --build 
 ```
 
 Para ambiente de desenvolvimento ou de testes:
