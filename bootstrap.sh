@@ -24,7 +24,7 @@ function docker_check(){
 # Instalo algumas dependências
 docker_check
 docker_compose_check
-
+mkdir -p modelset
 # Construo os contêineres 
 # Isso aqui demora hein... pegue um cafézinho e tenha paciência...
 echo "Construindo imagens bases..."
