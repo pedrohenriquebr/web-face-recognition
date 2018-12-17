@@ -30,15 +30,19 @@
 ## Variáveis de ambiente
 
 * `DATASET_DIR`
+  
   Diretório da base de dados para treinamento
 
 * `MODELSET_DIR`
+  
   Diretório de classificadores salvos e treinados
 
 * `KNN_MODEL`
+  
   Nome do arquivo do modelo de classificador KNN
 
 * `N_NEIGHBORS`
+  
   Particularidade do KNN, se não estiver declarado, `n_neighbors` assumirá 
   `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo;
 se não for um valor válido, `n_neighbors` assumirá
@@ -51,9 +55,11 @@ o valor `1`.
   * `cnn` (rede neural treinada, pode ser usado com KNN, não funcional)
 
 * `UNKNOWN_LABEL`
-  Rótulo para pessoa desconhecida, só é ativada quando `THRESHOLD` é assume `TRUE`. 
+  
+  Rótulo para pessoa desconhecida, só é ativada quando `THRESHOLD` é assume `TRUE`.
 
 * `THRESHOLD`
+  
   Para ativar limiar pré-definido no K-NN. Quando assume valor `TRUE`, K-NN retornará o rótulo para pessoa desconhecida. Quando assume valor `FALSE` K-NN retornará rótulo da pessoa mais parecida com o indivíduo da foto de teste, mesmo que não esteja na base de dados, é recomendado para gerar Matriz de Confusão].
 
 ## Guia
@@ -62,12 +68,6 @@ Clone o repositório:
 
 ```bash
 git clone https://bitbucket.org/nupemteam/face_recognition.git
-```
-
-ou clone já com seu usuário:
-
-```bash
-git clone https://<usuario>@bitbucket.org/nupemteam/face_recognition.git
 ```
 
 Entre no diretório do projeto clonado:
