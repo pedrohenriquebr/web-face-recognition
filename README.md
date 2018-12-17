@@ -7,7 +7,7 @@
 * Docker 18.06+
 * Docker Compose 1.23.1+
 * Python 3.3+ ou Python 2.7
-* Linux
+* Linux (distro baseada no Debian)
 
 ### Instalação de dependências
 
@@ -18,7 +18,6 @@
 ### Metas
 
 * [x] Detecção facial com HoG.
-* [ ] Detecção facial com CNN.
 * [x] Classificação facial com [K-NN](www.computacaointeligente.com.br/algoritmos/knn-k-vizinhos-mais-proximos/).
 
 ### Amostra de base de dados
