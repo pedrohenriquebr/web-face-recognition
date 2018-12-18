@@ -146,7 +146,6 @@ Para limpar os contêineres em execução, use:
 
 > Esse script removerá tanto as interfaces de rede quanto os contêineres.
 
-
 ## Sugestões de leitura
 
 * [Docker Curriculum](https://docker-curriculum.com/)
