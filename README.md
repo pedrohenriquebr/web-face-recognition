@@ -42,8 +42,8 @@
 
 * `N_NEIGHBORS`
   
-  Particularidade do KNN, se não estiver declarado, `n_neighbors` assumirá 
-  `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo;
+  Particularidade do KNN, se não estiver declarado, `n_neighbors` assumirá
+  `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo (apenas uma conveção);
 se não for um valor válido, `n_neighbors` assumirá
 o valor `1`.
 
@@ -75,44 +75,77 @@ Entre no diretório do projeto clonado:
 cd face_recognition
 ```
 
-Construa a imagem base do face_recognition:
+Faça instalação de dependências e a construção de imagens bases de forma automática: 
 
 ```bash
-cd base_face_recognition
-docker build -t base_face_recognition .
+./bootstrap.sh
 ```
 
-Construa a imagem base para web de face_recognition:
+### Reconhecimento Facial
+
+O servidor web ouve requisições GET na porta 5000, acesse `http://ip_do_servidor:5000/` para ver uma
+demonstração do reconhecimento.
+
+Para o reconhecimento em si, o servidor recebe requisiçõe do tipo POST contendo as fotos, pelo endereço `http://ip_do_servidor:5000/api/recognition` e retorna o nome da pessoa reconhecida.
+
+Trecho de código para fazer reconhecimento:
+
+```python
+def send_image(image_path):
+   url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(RECOGNITION_HOST=RECOGNITION_HOST)
+   files = {'file': open(image_path, 'rb')}
+   r = requests.post(url, files=files)
+   return json.loads(r.text)
+```
+
+### Cadastrando pessoas
+
+Dentro do diretório `dataset` crie o diretório com nome ou rótulo de quem deseja reconhecer
+com as fotos da pessoa. O ideal é ter a mesma quantidade de fotos para cada indivíduo.
+
+### Iniciando contêineres
+
+Para iniciar o contêiner em modo de desenvolvimento, use:
 
 ```bash
-cd ../
-docker build -t web_face_recognition . 
+./init_dev.sh
 ```
 
-Utilize o Compose para rodar os contêineres:
-
-Para ambiente de produção:
+Para iniciar o contêiner em modo de produção, use:
 
 ```bash
-docker-compose -f docker-compose.yml up -d --build 
+./init.sh
 ```
 
-Para ambiente de desenvolvimento ou de testes:
+Parar execução dos contêineres:
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d --build 
+./stop.sh
 ```
 
-Caso queira a instalação de dependências e a construção de imagens bases de forma automática, utilize o script `bootstrap.sh`.
+> Funcionará tanto para contêineres de produção quanto para desenvolvimento.
+
+### Treinamento
+
+Utilize:
 
 ```bash
-bash bootstrap.sh
+./train.sh
 ```
 
-## Cadastrando pessoas
+> O treinamento só é possível no modo de desenvolvimento, visto que em modo de produção
+> o diretório `modelset` é montado em modo de somente-leitura. Isso fica evidente, pois é criado um arquivo do classificador KNN, salvo com o nome especificado pela variável `KNN_MODEL`.
 
-Dentro do diretório `dataset` crie o diretório com nome ou rótulo de quem deseja reconhecer 
-com as fotos da pessoa.  
+### Removendo contêineres
+
+Para limpar os contêineres em execução, use:
+
+```bash
+./clean.sh
+```
+
+> Esse script removerá tanto as interfaces de rede quanto os contêineres.
+
 
 ## Sugestões de leitura
 
