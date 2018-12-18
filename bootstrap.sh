@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+test -n "$DEBUG" && set -x
+
 function docker_compose_check(){
     echo "verificando docker-compose..."
     if  ! command -v docker-compose  > /dev/null;

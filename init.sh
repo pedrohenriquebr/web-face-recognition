@@ -1,3 +1,5 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
-docker-compose -f docker-compose.yml up -d 
+test -n "$DEBUG" && set -x
+
+docker-compose -f docker-compose.yml up -d
