@@ -28,6 +28,8 @@
 
 ## Variáveis de ambiente
 
+As variáveis se encontram no arquivo `src/.env` e são carregadas pelo `settings.py, modifique conforme suas necessidades.
+
 * `DATASET_DIR`
   
    Diretório da base de dados para treinamento
