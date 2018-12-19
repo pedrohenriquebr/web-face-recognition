@@ -92,7 +92,8 @@ Trecho de código para fazer reconhecimento:
 
 ```python
 def send_image(image_path):
-   url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(RECOGNITION_HOST=RECOGNITION_HOST)
+   url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(
+      RECOGNITION_HOST=RECOGNITION_HOST)
    files = {'file': open(image_path, 'rb')}
    r = requests.post(url, files=files)
    return json.loads(r.text)
