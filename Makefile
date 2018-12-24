@@ -1,23 +1,26 @@
 BASE_FACE_RECOGNITION_DIR=base_face_recognition
+WEB_FACE_RECOGNITION_DIR=$(PWD)
 BASE_FACE_RECOGNITION_DOCKERFILE=$(BASE_FACE_RECOGNITION_DIR)/Dockerfile
+WEB_FACE_RECOGNITION_DOCKERFILE=$(WEB_FACE_RECOGNITION_DIR)/Dockerfile
 
 WEB_FACE_RECOGNITION_IMAGE=web_face_recognition
 BASE_FACE_RECOGNITION_IMAGE=base_face_recognition
 
+
+DOCKER_BUILD_FLAGS=--rm
 # Declaro que todos o arquivos YAML têm como dependência
 # o Dockerfile da imagem base no diretório base_facerecognition.
-%.yml : $(BASE_FACE_RECOGNITION_DOCKERFILE)
-
+%.yml: $(BASE_FACE_RECOGNITION_DOCKERFILE)
 # Construo os contêineres
 # Isso aqui demora hein... pegue um cafézinho e tenha paciência...
-build: Dockerfile $(BASE_FACE_RECOGNITION_DOCKERFILE)
-	mkdir -p modelset
-	echo "Construindo imagens bases..."
-	cd $(BASE_FACE_RECOGNITION_DIR)
-	docker build --rm -t $(BASE_FACE_RECOGNITION_IMAGE) .
-	cd ..
-	docker build --rm -t $(WEB_FACE_RECOGNITION_IMAGE) .
-	echo "Imagens bases construídas com sucesso!"
+
+define build_image
+	docker build -f $(1) $(DOCKER_BUILD_FLAGS) -t $(2) $(3)
+endef
+
+build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) src modelset
+	$(call build_image,$(BASE_FACE_RECOGNITION_DOCKERFILE),$(BASE_FACE_RECOGNITION_IMAGE),$(BASE_FACE_RECOGNITION_DIR))
+	$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
 
 # Removo os contêineres
 clean: *.yml
@@ -25,6 +28,7 @@ clean: *.yml
 	docker-compose -f docker-compose.yml down
 	docker-compose -f docker-compose.yml rm -sf
 	docker-compose -f docker-compose.dev.yml rm -sf
+	rm -f modelset/*.clf
 
 # Executo o contêiner
 run: docker-compose.yml modelset/*.clf
