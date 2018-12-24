@@ -26,3 +26,4 @@ function docker_check(){
 # Instalo algumas dependências
 docker_check
 docker_compose_check
+mkdir -p modelset
