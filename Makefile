@@ -22,14 +22,6 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 	$(call build_image,$(BASE_FACE_RECOGNITION_DOCKERFILE),$(BASE_FACE_RECOGNITION_IMAGE),$(BASE_FACE_RECOGNITION_DIR))
 	$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
 
-# Removo os contêineres
-clean: *.yml
-	docker-compose -f docker-compose.dev.yml down
-	docker-compose -f docker-compose.yml down
-	docker-compose -f docker-compose.yml rm -sf
-	docker-compose -f docker-compose.dev.yml rm -sf
-	rm -f modelset/*.clf
-
 # Executo o contêiner
 run: docker-compose.yml modelset/*.clf
 	docker-compose -f docker-compose.yml up -d
@@ -39,12 +31,28 @@ run_dev: docker-compose.dev.yml modelset dataset
 	docker-compose -f docker-compose.dev.yml up -d --build
 
 # Paro a execução dos contêineres
-stop: docker-compose.dev.yml docker-compose.yml
-	docker-compose -f docker-compose.yml stop
-	docker-compose -f docker-compose.dev.yml stop
+stop: *.yml
+	docker-compose stop
+
+status: *.yml
+	docker-compose ps
+
+# Removo os contêineres
+clean: *.yml
+	docker-compose down
+
+# Além de remover os contêineres, remove a imagem base
+erase: clean
+	rm -f modelset/*.clf
+	docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
+	#docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
 # Shell script para executar o script python de treinamento de dentro do container.
 # É necessário chamar "python3 training.py " dentro do container, então é usado o docker-compose exec
 # Obs: só possível fazer treinamento em ambiente de desenvolvimento.
-train: dataset modelset docker-compose.dev.yml
+train: run_dev
 	docker-compose -f docker-compose.dev.yml exec web python3 training.py
+
+terminal:
+	docker-compose exec web bash
+	#docker exec -it face_recognition_web_1_b123e52ab166 bash
