@@ -27,7 +27,7 @@ run: docker-compose.yml modelset/*.clf
 	docker-compose -f docker-compose.yml up -d
 
 # Executo o contêiner para desenvolvimento
-run_dev: docker-compose.dev.yml modelset dataset
+run-dev: docker-compose.dev.yml modelset dataset
 	docker-compose -f docker-compose.dev.yml up -d --build
 
 # Paro a execução dos contêineres
