@@ -8,6 +8,7 @@ BASE_FACE_RECOGNITION_IMAGE=base_face_recognition
 
 
 DOCKER_BUILD_FLAGS=--rm
+
 # Declaro que todos o arquivos YAML têm como dependência
 # o Dockerfile da imagem base no diretório base_facerecognition.
 %.yml: $(BASE_FACE_RECOGNITION_DOCKERFILE)
@@ -50,6 +51,7 @@ erase: clean
 # Shell script para executar o script python de treinamento de dentro do container.
 # É necessário chamar "python3 training.py " dentro do container, então é usado o docker-compose exec
 # Obs: só possível fazer treinamento em ambiente de desenvolvimento.
+
 train: run_dev
 	docker-compose -f docker-compose.dev.yml exec web python3 training.py
 
