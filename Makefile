@@ -52,7 +52,7 @@ erase: clean
 # É necessário chamar "python3 training.py " dentro do container, então é usado o docker-compose exec
 # Obs: só possível fazer treinamento em ambiente de desenvolvimento.
 
-train: run_dev
+train: run-dev
 	docker-compose -f docker-compose.dev.yml exec web python3 training.py
 
 terminal:
