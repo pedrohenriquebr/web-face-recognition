@@ -44,6 +44,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 
 		# Loop through each training image for the current person
 		for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
+			print('imagem: %s'%(img_path))
 			image = face_recognition.load_image_file(img_path)
 			face_bounding_boxes = face_recognition.face_locations(image,model=model)
 
@@ -80,6 +81,7 @@ def main(argv):
 	train_folder = os.getenv('DATASET_DIR')
 	model = os.getenv('FACE_DETECTION_MODEL','hog')
 	n_neighbors = os.getenv('N_NEIGHBORS')
+	model_save_path = ''
 
 	if n_neighbors != None:
 	# tento converter para inteiro
@@ -87,13 +89,8 @@ def main(argv):
 			n_neighbors = int(n_neighbors)
 		except:
 			n_neighbors = 1
-
-	# futuramente posso precisar
-	#if model == 'cnn':
-	#	cnn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('CNN_MODEL'))
-	#	classifier = training.train(train_folder, model_save_path=cnn_model, n_neighbors=1,verbose=True,model='cnn')
-	knn_model = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-	classifier = train(train_folder, model_save_path=knn_model, n_neighbors=n_neighbors,verbose=True,model=model)
+	model_save_path = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
+	train(train_folder, model_save_path=model_save_path, n_neighbors=n_neighbors,verbose=True,model=model)
 
 
 if __name__ == "__main__":

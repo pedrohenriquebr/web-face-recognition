@@ -1,0 +1,38 @@
+#resultado {
+    overflow: auto;
+    background-color: #eeeeee;
+    width: 279px;
+    height: 350px;
+    margin-left: 40px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+#canvasImg {
+    margin-left: 0;
+    padding: 0px;
+    max-width: 500px;
+    max-height: 350px;
+}
+
+#container {
+    margin-right: 350px;
+    margin-left: 350px;
+    margin-top: 70px;
+    padding-left: 280px;
+    padding-right: 280px;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-left-width: 1px;
+    border-left-style: solid;
+    padding-top: 30px;
+    font-size: 14px;
+}
+
+#bemvindo {
+    margin: 40px;
+}
