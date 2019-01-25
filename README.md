@@ -20,12 +20,6 @@
 * [x] Detecção facial com HoG.
 * [x] Classificação facial com [K-NN](www.computacaointeligente.com.br/algoritmos/knn-k-vizinhos-mais-proximos/).
 
-### Amostra de base de dados
-
-* [Dataset](https://drive.google.com/drive/folders/1QcVSeMT2tGXO-oMZkyBhuDGqBgmXRBmh?usp=sharing)
-  
-    baixe, descomprima e coloque as pastas dentro de `dataset`
-
 ## Variáveis de ambiente
 
 As variáveis se encontram no arquivo `src/.env` e são carregadas pelo `settings.py`, modifique conforme suas necessidades.
