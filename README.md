@@ -18,7 +18,7 @@
 ### Metas
 
 * [x] Detecção facial com HoG.
-* [x] Classificação facial com [K-NN](www.computacaointeligente.com.br/algoritmos/knn-k-vizinhos-mais-proximos/).
+* [x] Classificação facial com K-NN
 
 ## Variáveis de ambiente
 
@@ -26,7 +26,7 @@ As variáveis se encontram no arquivo `src/.env` e são carregadas pelo `setting
 
 * `DATASET_DIR`
   
-   Diretório da base de dados para treinamento
+    Diretório da base de dados para treinamento
 
 * `MODELSET_DIR`
   
@@ -38,15 +38,12 @@ As variáveis se encontram no arquivo `src/.env` e são carregadas pelo `setting
 
 * `N_NEIGHBORS`
   
-  Particularidade do KNN, se não estiver declarado, `n_neighbors` assumirá
-  `int(round(math.sqrt(len(X))))`, onde `X` é número de pessoas a serem treinadas pelo algoritmo (apenas uma conveção);
-se não for um valor válido, `n_neighbors` assumirá
-o valor `1`.
+  Número de vizinhos, o padrão é raiz quadrada do número de pessoas.
 
 * `FACE_DETECTION_MODEL`
   
   Modelo de detecção de faces a ser utilizado, pode assumir os seguintes valores:
-  * `hog` (valor padrão)
+  * `hog` (padrão)
   * `cnn` (rede neural treinada, pode ser usado com KNN, não funcional)
 
 * `UNKNOWN_LABEL`
@@ -55,7 +52,7 @@ o valor `1`.
 
 * `THRESHOLD`
   
-  Para ativar limiar pré-definido no K-NN. Quando assume valor `TRUE`, K-NN retornará o rótulo para pessoa desconhecida. Quando assume valor `FALSE` K-NN retornará rótulo da pessoa mais parecida com o indivíduo da foto de teste, mesmo que não esteja na base de dados, é recomendado para gerar Matriz de Confusão].
+  Para ativar limiar pré-definido no K-NN. Quando assume valor `TRUE`, K-NN retornará o rótulo para pessoa desconhecida. Quando assume valor `FALSE` K-NN retornará rótulo da pessoa mais parecida com o indivíduo da foto de teste, mesmo que não esteja na base de dados, é recomendado para gerar Matriz de Confusão.
 
 ## Guia
 
