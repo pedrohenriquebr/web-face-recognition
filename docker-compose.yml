@@ -1,8 +1,17 @@
 version: '3'
 services:
   web:
+    build: .
     image: web_face_recognition:latest
     ports:
       - 5000:5000
+    environment:
+      - ENV_APP=${ENV_APP:-release}
+    volumes:
+      - ./src:/root/face_recognition:ro
+      - ./dataset:/dataset:ro
+      - ./modelset:/modelset:rw
+    labels:
+      - 'app.environment=${ENV_APP:-release}'
       
 

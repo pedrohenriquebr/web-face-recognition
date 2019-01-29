@@ -12,6 +12,7 @@ FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
 MODELSET_DIR = os.getenv('MODELSET_DIR')
 KNN_MODEL  = os.getenv('KNN_MODEL')
 THRESHOLD = os.getenv('THRESHOLD')
+ENV_APP = os.getenv('ENV_APP')
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
