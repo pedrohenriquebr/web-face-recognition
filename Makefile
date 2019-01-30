@@ -6,8 +6,10 @@ WEB_FACE_RECOGNITION_DOCKERFILE=$(WEB_FACE_RECOGNITION_DIR)/Dockerfile
 WEB_FACE_RECOGNITION_IMAGE=web_face_recognition
 BASE_FACE_RECOGNITION_IMAGE=base_face_recognition
 
-
 DOCKER_BUILD_FLAGS=--rm
+
+DATASETDIR := $(PWD)/dataset
+TESTSET := $(PWD)/testset
 
 .PHONY: build run run-dev stop status stop clean erase train terminal
 
@@ -46,11 +48,11 @@ status: *.yml
 
 # Removo os contêineres
 clean: *.yml
+	@rm -f modelset/*.clf
 	@docker-compose down
 
 # Além de remover os contêineres, remove a imagem base
-erase: clean
-	@rm -f modelset/*.clf
+erase:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
 	#docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
@@ -58,9 +60,18 @@ erase: clean
 # É necessário chamar "python3 training.py " dentro do container, então é usado o docker-compose exec
 # Obs: só possível fazer treinamento em ambiente de desenvolvimento.
 
-train: run-dev
+train:
 	@docker-compose exec web python3 training.py
 
 terminal:
 	@docker-compose exec web bash
-	#docker exec -it face_recognition_web_1_b123e52ab166 bash
+
+standard-dataset: standard.sh
+	for i in $(DATASETDIR)/* ; do \
+		bash standard.sh "$$i" ;\
+	done
+
+standard-testset: standard.sh
+	for i in $(TESTSET)/* ; do \
+		bash standard.sh "$$i" ;\
+	done
