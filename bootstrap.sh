@@ -28,3 +28,4 @@ docker_check
 docker_compose_check
 mkdir -p modelset
 mkdir -p dataset
+mkdir -p testset
