@@ -32,12 +32,12 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 
 # Executo o contêiner
 run: docker-compose.yml modelset/*.clf
+	export ENV_APP='release';\
 	docker-compose up -d
 
 # Executo o contêiner para desenvolvimento
 run-dev: docker-compose.yml modelset dataset
-	export ENV_APP=devel; \
-	docker-compose up  -d
+	docker-compose up -d
 
 # Paro a execução dos contêineres
 stop: docker-compose.yml
