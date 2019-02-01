@@ -13,6 +13,7 @@ MODELSET_DIR = os.getenv('MODELSET_DIR')
 KNN_MODEL  = os.getenv('KNN_MODEL')
 THRESHOLD = os.getenv('THRESHOLD')
 ENV_APP = os.getenv('ENV_APP')
+HOST_RUN = os.getenv('HOST_RUN','0.0.0.0')
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -38,10 +39,10 @@ def face_recognition_api():
 			return detect_faces_in_image(file,model=model)
 	
 
-
-@app.route('/', methods=['GET'])
-def index():
-	return render_template('index.html')
+if ENV_APP == 'devel':
+	@app.route('/', methods=['GET'])
+	def index():
+		return render_template('index.html')
 
 
 def detect_faces_in_image(file_stream,model='hog'):
@@ -63,4 +64,4 @@ def detect_faces_in_image(file_stream,model='hog'):
 
 	
 if __name__ == "__main__":
-	app.run(debug=True,port=5000,host='0.0.0.0')
+	app.run(debug=(ENV_APP=='devel'),port=5000,host=HOST_RUN)
