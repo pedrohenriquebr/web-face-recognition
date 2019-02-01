@@ -51,7 +51,7 @@ def main():
     print(
     """
     Hits: {}
-    Rate: {}
+    Rate: {:0.2f}%
     Total: {}
     """.format(hits,rate,len(labels)))
 
