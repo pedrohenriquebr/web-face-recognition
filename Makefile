@@ -11,7 +11,7 @@ DOCKER_BUILD_FLAGS=--rm
 DATASETDIR := $(PWD)/dataset
 TESTSET := $(PWD)/testset
 
-.PHONY: build run run-dev stop status stop clean erase train terminal
+.PHONY: build run run-dev stop status stop clean rmi rmi-all train terminal
 
 all:
 	@make build
@@ -40,25 +40,24 @@ run-dev: docker-compose.yml modelset dataset
 	docker-compose up  -d
 
 # Paro a execução dos contêineres
-stop: *.yml
+stop: docker-compose.yml
 	@docker-compose stop
 
-status: *.yml
+status: docker-compose.yml
 	@docker-compose ps
 
-# Removo os contêineres
-clean: *.yml
+# Remove the containers
+clean: docker-compose.yml
 	@rm -f modelset/*.clf
 	@docker-compose down
 
-# Além de remover os contêineres, remove a imagem base
-erase:
+# Remove web face base image only
+rmi:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
-	#docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
-# Shell script para executar o script python de treinamento de dentro do container.
-# É necessário chamar "python3 training.py " dentro do container, então é usado o docker-compose exec
-# Obs: só possível fazer treinamento em ambiente de desenvolvimento.
+# Remove base face base image too
+rmi-all: rmi
+	@docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
 train:
 	@docker-compose exec web python3 training.py
@@ -67,11 +66,11 @@ terminal:
 	@docker-compose exec web bash
 
 standard-dataset: standard.sh
-	for i in $(DATASETDIR)/* ; do \
+	@for i in $(DATASETDIR)/* ; do \
 		bash standard.sh "$$i" ;\
 	done
 
 standard-testset: standard.sh
-	for i in $(TESTSET)/* ; do \
+	@for i in $(TESTSET)/* ; do \
 		bash standard.sh "$$i" ;\
 	done
