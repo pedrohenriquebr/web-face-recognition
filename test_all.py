@@ -2,8 +2,11 @@
 import requests
 import json
 import os
+from dotenv import load_dotenv
 
-RECOGNITION_HOST='0.0.0.0'
+load_dotenv()
+
+RECOGNITION_HOST=os.getenv('HOST_RUN','0.0.0.0')
 
 def send_image(image_path):
    url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(
