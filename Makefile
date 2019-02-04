@@ -16,12 +16,11 @@ TESTSET := $(PWD)/testset
 all:
 	@make build
 
-# Declaro que todos o arquivos YAML têm como dependência
-# o Dockerfile da imagem base no diretório base_facerecognition.
-%.yml: $(BASE_FACE_RECOGNITION_DOCKERFILE)
-# Construo os contêineres
-# Isso aqui demora hein... pegue um cafézinho e tenha paciência...
+$(WEB_FACE_RECOGNITION_DOCKERFILE) : $(BASE_FACE_RECOGNITION_DOCKERFILE)
 
+%.yml: $(WEB_FACE_RECOGNITION_DOCKERFILE)
+
+# Base image building
 define build_image
 	docker build -f $(1) $(DOCKER_BUILD_FLAGS) -t $(2) $(3)
 endef
@@ -30,25 +29,26 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 	@$(call build_image,$(BASE_FACE_RECOGNITION_DOCKERFILE),$(BASE_FACE_RECOGNITION_IMAGE),$(BASE_FACE_RECOGNITION_DIR))
 	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
 
-# Executo o contêiner
-run: docker-compose.yml modelset/*.clf
-	export ENV_APP='release';\
-	docker-compose up -d
+# Run production environment
+run: production.yml modelset/*.clf
+	@export ENV_APP=release;\
+	docker-compose -f $< up -d
 
-# Executo o contêiner para desenvolvimento
+# Run  development environment
 run-dev: docker-compose.yml modelset dataset
-	docker-compose up -d
+	@export ENV_APP=devel;\
+	docker-compose -f $< up -d
 
-# Paro a execução dos contêineres
+# Stop containers
 stop: docker-compose.yml
 	@docker-compose stop
 
+# Get running containers status
 status: docker-compose.yml
 	@docker-compose ps
 
 # Remove the containers
 clean: docker-compose.yml
-	@rm -f modelset/*.clf
 	@docker-compose down
 
 # Remove web face base image only
@@ -59,9 +59,11 @@ rmi:
 rmi-all: rmi
 	@docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
+# Train the face recognition model
 train:
 	@docker-compose exec web python3 training.py
 
+# Enter the terminal
 terminal:
 	@docker-compose exec web bash
 

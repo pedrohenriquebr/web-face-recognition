@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    build: .
+    image: web_face_recognition:latest
+    ports:
+      - ${PORT}:5000
+    env_file:
+      - ./.production.env
+    labels:
+      - 'app.environment=${ENV_APP}'
+      
+

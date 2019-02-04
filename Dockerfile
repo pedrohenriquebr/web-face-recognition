@@ -5,8 +5,7 @@ EXPOSE 5000
 
 RUN mkdir /modelset
 RUN mkdir /dataset
-VOLUME /modelset
-VOLUME /dataset
+VOLUME ["/dataset"]
 
 COPY ./src /root/face_recognition
 COPY ./modelset /modelset
