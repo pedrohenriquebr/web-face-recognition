@@ -7,7 +7,8 @@ from sklearn import neighbors
 import os.path
 import pickle
 import sys
-import settings
+
+ENV_APP = os.getenv('ENV_APP')
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
 	"""
@@ -81,7 +82,6 @@ def main(argv):
 	DATASET_DIR = os.getenv('DATASET_DIR')
 	FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
 	N_NEIGHBORS = os.getenv('N_NEIGHBORS')
-	ENV_APP = os.getenv('ENV_APP')
 
 	model_save_path = ''
 
@@ -104,4 +104,8 @@ def main(argv):
 	print("Training finished!")
 
 if __name__ == "__main__":
-	main(sys.argv)
+	if ENV_APP == "devel":
+		main(sys.argv)
+	else:
+		print("Not allowed!")
+	
