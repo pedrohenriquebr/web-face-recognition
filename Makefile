@@ -31,12 +31,10 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 
 # Run production environment
 run: production.yml modelset/*.clf
-	@export ENV_APP=release;\
 	docker-compose -f $< up -d
 
 # Run  development environment
 run-dev: docker-compose.yml modelset dataset
-	@export ENV_APP=devel;\
 	docker-compose -f $< up -d
 
 # Stop containers
