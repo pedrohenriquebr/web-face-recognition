@@ -9,5 +9,3 @@ services:
       - ./.production.env
     labels:
       - 'app.environment=${ENV_APP}'
-      
-
