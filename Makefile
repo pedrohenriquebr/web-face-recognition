@@ -30,7 +30,9 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
 
 # Run production environment
-run: production.yml modelset/*.clf
+run: production.yml
+	export USERNAME='pedrobraga';\
+	export TAG='latest';\
 	docker-compose -f $< up -d
 
 # Run  development environment
