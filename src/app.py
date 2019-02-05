@@ -1,11 +1,15 @@
 import os
-
+import signal
+from multiprocessing import Process
 import face_recognition
 import prediction
 import settings
 import training
 from flask import Flask, jsonify, redirect, render_template, request
 from werkzeug.utils import secure_filename
+import socket
+
+print(socket.gethostname())
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
@@ -64,4 +68,14 @@ def detect_faces_in_image(file_stream,model='hog'):
 
 	
 if __name__ == "__main__":
-	app.run(debug=(ENV_APP=='devel'),port=5000,host=HOST_RUN)
+	def server_handler(signum, frame):
+		print('Signal handler called with signal', signum)
+		server.terminate()
+		server.join()
+
+	signal.signal(signal.SIGTERM, server_handler)
+	def run_server():
+		app.run(debug=(ENV_APP=='devel'),port=5000,host=HOST_RUN)
+	
+	server = Process(target=run_server)
+	server.start()
