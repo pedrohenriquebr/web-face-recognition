@@ -1,8 +1,7 @@
 version: '3'
 services:
   web:
-    build: .
-    image: web_face_recognition:latest
+    image: ${USERNAME}/web_face_recognition:${TAG}
     ports:
       - 5000-5005:5000
     env_file:
