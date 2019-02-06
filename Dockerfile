@@ -36,6 +36,8 @@ RUN mkdir /root/face_recognition
 
 COPY ./requirements.txt /root/face_recognition/requirements.txt
 
+WORKDIR /root/face_recognition
+
 RUN pip3 install -r requirements.txt
 
 EXPOSE 5000
@@ -46,7 +48,5 @@ VOLUME ["/dataset"]
 VOLUME ["/modelset"]
 
 COPY ./src /root/face_recognition
-
-WORKDIR /root/face_recognition
 
 CMD python3 app.py
