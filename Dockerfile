@@ -1,5 +1,5 @@
 FROM base_face_recognition:latest
-LABEL maintainer="PedroHenriqueBraga <pedrohenriquebraga735@gmail.com>"
+LABEL maintainer="PedroBraga <pedrohenriquebraga735@gmail.com>"
 
 EXPOSE 5000
 
