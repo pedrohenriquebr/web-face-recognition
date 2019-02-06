@@ -17,7 +17,6 @@ MODELSET_DIR = os.getenv('MODELSET_DIR')
 KNN_MODEL  = os.getenv('KNN_MODEL')
 THRESHOLD = os.getenv('THRESHOLD')
 ENV_APP = os.getenv('ENV_APP')
-HOST_RUN = os.getenv('HOST_RUN','0.0.0.0')
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -75,7 +74,7 @@ if __name__ == "__main__":
 
 	signal.signal(signal.SIGTERM, server_handler)
 	def run_server():
-		app.run(debug=(ENV_APP=='devel'),port=5000,host=HOST_RUN)
+		app.run(debug=True,port=5000,host="0.0.0.0")
 	
 	server = Process(target=run_server)
 	server.start()
