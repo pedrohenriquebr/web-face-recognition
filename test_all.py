@@ -2,14 +2,11 @@
 import requests
 import json
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-RECOGNITION_HOST=os.getenv('HOST_RUN','0.0.0.0')
+RECOGNITION_HOST=os.getenv('RECOGNITION_HOST','webfacerecognition.local')
 
 def send_image(image_path):
-   url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(
+   url = 'http://{RECOGNITION_HOST}/api/recognition'.format(
       RECOGNITION_HOST=RECOGNITION_HOST)
    files = {'file': open(image_path, 'rb')}
    r = requests.post(url, files=files)
