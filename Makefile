@@ -31,11 +31,11 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) sr
 
 # Run production environment
 run: production.yml modelset/*.clf
-	docker-compose -f $< up -d
+	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
 
 # Run  development environment
 run-dev: docker-compose.yml modelset dataset
-	docker-compose -f $< up -d
+	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
 
 # Stop containers
 stop: docker-compose.yml
