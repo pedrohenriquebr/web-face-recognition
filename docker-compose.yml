@@ -1,10 +1,14 @@
 version: '3'
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "80:80"
   web:
     build: .
     image: web_face_recognition:latest
-    ports:
-      - ${PORT}:5000
     env_file:
       - ./.env
     volumes:
