@@ -7,9 +7,8 @@ function build_image(){
 function building(){
     # Base images building
     echo "Building the image $DOCKER_USERNAME/web_face_recognition:$TAG"
-    build_image "$PWD/Dockerfile" "web_face_recognition:latest" "$PWD"
-    docker tag "web_face_recognition:latest" "$DOCKER_USERNAME/web_face_recognition:$TAG"
-    docker tag "web_face_recognition:latest" "$DOCKER_USERNAME/web_face_recognition:latest"
+    build_image "$PWD/Dockerfile" "$DOCKER_USERNAME/web_face_recognition:latest" "$PWD"
+    docker tag "$DOCKER_USERNAME/web_face_recognition:latest" "$DOCKER_USERNAME/web_face_recognition:$TAG"
 }
 
 function main(){

@@ -8,7 +8,7 @@ services:
       - "80:80"
   web:
     build: .
-    image: web_face_recognition:latest
+    image: pedrobraga/web_face_recognition:latest
     env_file:
       - ./.env
     volumes:

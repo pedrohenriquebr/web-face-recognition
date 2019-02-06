@@ -20,7 +20,7 @@ define build_image
 endef
 
 build: $(WEB_FACE_RECOGNITION_DOCKERFILE) src modelset
-	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
+	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),pedrobraga/$(WEB_FACE_RECOGNITION_IMAGE):"$${TAG:-latest}",$(WEB_FACE_RECOGNITION_DIR))
 
 # Run production environment
 run: production.yml modelset/*.clf

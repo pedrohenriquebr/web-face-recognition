@@ -7,8 +7,7 @@ services:
     ports:
       - "80:80"
   web:
-    #image: pedrobraga/web_face_recognition:latest
-    image: web_face_recognition:latest
+    image: pedrobraga/web_face_recognition:latest
     env_file:
       - ./.production.env
     volumes:
