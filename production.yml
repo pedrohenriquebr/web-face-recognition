@@ -7,15 +7,11 @@ services:
     ports:
       - "80:80"
   web:
-    build: .
+    #image: pedrobraga/web_face_recognition:latest
     image: web_face_recognition:latest
     env_file:
-      - ./.env
+      - ./.production.env
     volumes:
-      - ./src:/root/face_recognition:ro
-      - ./dataset:/dataset:ro
-      - ./modelset:/modelset:rw
+      - ./modelset:/modelset/:ro
     labels:
       - 'app.environment=${ENV_APP}'
-      
-

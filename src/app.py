@@ -1,17 +1,22 @@
 import os
-
+import signal
+from multiprocessing import Process
 import face_recognition
 import prediction
 import settings
 import training
 from flask import Flask, jsonify, redirect, render_template, request
 from werkzeug.utils import secure_filename
+import socket
+
+print(socket.gethostname())
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
 MODELSET_DIR = os.getenv('MODELSET_DIR')
 KNN_MODEL  = os.getenv('KNN_MODEL')
 THRESHOLD = os.getenv('THRESHOLD')
+ENV_APP = os.getenv('ENV_APP')
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -37,10 +42,10 @@ def face_recognition_api():
 			return detect_faces_in_image(file,model=model)
 	
 
-
-@app.route('/', methods=['GET'])
-def index():
-	return render_template('index.html')
+if ENV_APP == 'devel':
+	@app.route('/', methods=['GET'])
+	def index():
+		return render_template('index.html')
 
 
 def detect_faces_in_image(file_stream,model='hog'):
@@ -62,4 +67,14 @@ def detect_faces_in_image(file_stream,model='hog'):
 
 	
 if __name__ == "__main__":
-	app.run(debug=True,port=5000,host='0.0.0.0')
+	def server_handler(signum, frame):
+		print('Signal handler called with signal', signum)
+		server.terminate()
+		server.join()
+
+	signal.signal(signal.SIGTERM, server_handler)
+	def run_server():
+		app.run(debug=True,port=5000,host="0.0.0.0")
+	
+	server = Process(target=run_server)
+	server.start()

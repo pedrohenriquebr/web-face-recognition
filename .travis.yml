@@ -1,0 +1,5 @@
+services:
+  - docker
+script:
+  - bash bootstrap.sh
+  - bash deploy.sh 1.1.3

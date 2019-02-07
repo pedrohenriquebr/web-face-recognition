@@ -8,6 +8,8 @@ import pickle
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 import sys
+
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 THRESHOLD = os.getenv('THRESHOLD','TRUE')
 

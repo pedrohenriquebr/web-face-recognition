@@ -7,7 +7,8 @@ from sklearn import neighbors
 import os.path
 import pickle
 import sys
-import settings
+
+ENV_APP = os.getenv('ENV_APP')
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
 	"""
@@ -44,7 +45,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 
 		# Loop through each training image for the current person
 		for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
-			print('imagem: %s'%(img_path))
+			print('Found image: %s'%(img_path))
 			image = face_recognition.load_image_file(img_path)
 			face_bounding_boxes = face_recognition.face_locations(image,model=model)
 
@@ -78,22 +79,33 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 	return knn_clf
 	
 def main(argv):
-	train_folder = os.getenv('DATASET_DIR')
-	model = os.getenv('FACE_DETECTION_MODEL','hog')
-	n_neighbors = os.getenv('N_NEIGHBORS')
+	DATASET_DIR = os.getenv('DATASET_DIR')
+	FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
+	N_NEIGHBORS = os.getenv('N_NEIGHBORS')
+
 	model_save_path = ''
 
-	if n_neighbors != None:
+	persons = len(os.listdir(DATASET_DIR))
+	if persons <= 1:
+		print("Insufficient people")
+		print("Found only {} persons ".format(persons))
+		exit()
+
+	if N_NEIGHBORS != None:
 	# tento converter para inteiro
 		try:
-			n_neighbors = int(n_neighbors)
+			N_NEIGHBORS = int(N_NEIGHBORS)
 		except:
-			n_neighbors = 1
+			N_NEIGHBORS = 1
 	model_save_path = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-	train(train_folder, model_save_path=model_save_path, n_neighbors=n_neighbors,verbose=True,model=model)
-
+	
+	print("Starting training...")
+	train(DATASET_DIR, model_save_path=model_save_path, n_neighbors=N_NEIGHBORS,verbose=(ENV_APP == 'devel'),model=FACE_DETECTION_MODEL)
+	print("Training finished!")
 
 if __name__ == "__main__":
-	print("Iniciando treinamento...")
-	main(sys.argv)
-	print("Treinamento completo !!")
+	if ENV_APP == "devel":
+		main(sys.argv)
+	else:
+		print("Not allowed!")
+	
