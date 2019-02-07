@@ -9,48 +9,86 @@
 * Python 3.3+ ou Python 2.7
 * Linux (Debian based distro)
 
-### Dependency installation
-
-* [Installing Docker](https://docs.docker.com/v17.12/install/)
-* [Installing Docker Compose](https://docs.docker.com/v17.09/compose/install/)
-* [Installing Git](https://git-scm.com/book/pt-br/v1/Primeiros-passos-Instalando-Git)
-
 ### Goals
 
-* [ ] Face recognition with HoG
-* [ ] Face classification with K-NN
+* [x] Face recognition with HoG
+* [x] Face classification with K-NN
 
-## Environment variables
+## Guide
 
-The variables can be found on the src/.env file and are loaded by the settings.py, modify according to your needs.
+Clone the repository:
 
-* `DATASET_DIR`
+```console
+$ git clone https://github.com/pedrohenriquebr/web-face-recognition.git
+```
 
-    Database directory for training
+Go to the cloned project directory:
 
-* `MODELSET_DIR`
-  
-   Saved and trained classifiers directory
+```console
+$ cd web-face-recognition
+```
 
-* `KNN_MODEL`
-  
-  KNN classifier model file name
+Start the bootstrap script:
 
-* `N_NEIGHBORS`
-  
-  Number of neighbors, the standard is square root of the number of people.
+```console
+$ ./bootstrap.sh
+```
 
-* `FACE_DETECTION_MODEL`
-  
-  Face detection model that's going to be utilized, can assume the following values:
-  * `hog` (default)
-  * `cnn` (trained neural network, can be used with KNN, not functional)
+### Registering people
 
-* `UNKNOWN_LABEL`
-  
-  Label for unknown person, only activated when `THRESHOLD` assumes `TRUE`.
+Inside the dataset directory, create the directory with the name or the label of who you want to recognize with the person's picture. Having the same amount of pictures for each individual is the ideal.
 
-* `THRESHOLD`
-  
-  To activate predifined threshold on K-NN. When it assumes value TRUE, K-NN will return the label for unknown person. When it assumes value FALSE K-NN will return the label for the person that is the most resemblant of the individual from the test picture, even if it's not in the database it's recommended to generate Confusion Matrix.
-  
+### Starting containers
+
+Build the base images for the containers:
+
+```console
+$ make
+```
+
+To start the container on development mode, use:
+
+```console
+$ make run-dev
+```
+
+To start the container on production mode, use:
+
+```console
+$ make run
+```
+
+To stop the containers:
+
+```console
+$ make stop
+```
+
+
+> It will work on both production and development containers.
+
+### Training
+
+Use:
+
+```console
+$ make train
+```
+
+> Training is only possible on development mode, since on production mode the modelset directory is built in only-reading mode.
+
+### Removing containers
+
+To clean running containers, use:
+
+```console
+$ make clean
+```
+
+> This script will remove both the network interfaces and the containers.
+
+## Reading suggestions
+
+* [Modern Face Recognition with Deep Learning](https://medium.com/@ageitgey/machine-learning-is-fun-part-4-modern-face-recognition-with-deep-learning-c3cffc121d78)
+* [Face Recognition](https://github.com/ageitgey/face_recognition)
+* [Face Recognitino API Documentation](https://face-recognition.readthedocs.io/en/latest/face_recognition.html)z
