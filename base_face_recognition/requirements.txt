@@ -1,2 +1,0 @@
-sklearn
-face_recognition
