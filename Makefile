@@ -1,10 +1,6 @@
-BASE_FACE_RECOGNITION_DIR=base_face_recognition
 WEB_FACE_RECOGNITION_DIR=$(PWD)
-BASE_FACE_RECOGNITION_DOCKERFILE=$(BASE_FACE_RECOGNITION_DIR)/Dockerfile
 WEB_FACE_RECOGNITION_DOCKERFILE=$(WEB_FACE_RECOGNITION_DIR)/Dockerfile
-
 WEB_FACE_RECOGNITION_IMAGE=web_face_recognition
-BASE_FACE_RECOGNITION_IMAGE=base_face_recognition
 
 DOCKER_BUILD_FLAGS=--rm
 
@@ -16,8 +12,6 @@ TESTSET := $(PWD)/testset
 all:
 	@make build
 
-$(WEB_FACE_RECOGNITION_DOCKERFILE) : $(BASE_FACE_RECOGNITION_DOCKERFILE)
-
 %.yml: $(WEB_FACE_RECOGNITION_DOCKERFILE)
 
 # Base image building
@@ -25,9 +19,8 @@ define build_image
 	docker build -f $(1) $(DOCKER_BUILD_FLAGS) -t $(2) $(3)
 endef
 
-build: $(WEB_FACE_RECOGNITION_DOCKERFILE) $(BASE_FACE_RECOGNITION_DOCKERFILE) src modelset
-	@$(call build_image,$(BASE_FACE_RECOGNITION_DOCKERFILE),$(BASE_FACE_RECOGNITION_IMAGE),$(BASE_FACE_RECOGNITION_DIR))
-	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),$(WEB_FACE_RECOGNITION_IMAGE),$(WEB_FACE_RECOGNITION_DIR))
+build: $(WEB_FACE_RECOGNITION_DOCKERFILE) src modelset
+	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),pedrobraga/$(WEB_FACE_RECOGNITION_IMAGE):"$${TAG:-latest}",$(WEB_FACE_RECOGNITION_DIR))
 
 # Run production environment
 run: production.yml modelset/*.clf
@@ -52,10 +45,6 @@ clean: docker-compose.yml
 # Remove web face base image only
 rmi:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
-
-# Remove base face base image too
-rmi-all: rmi
-	@docker rmi $(BASE_FACE_RECOGNITION_IMAGE)
 
 # Train the face recognition model
 train:
