@@ -5,7 +5,7 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
-      - "80:80"
+      - "5000:80"
   web:
     build: .
     image: pedrobraga/web_face_recognition:latest
