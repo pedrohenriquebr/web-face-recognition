@@ -61,7 +61,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 				y.append(class_dir)
 
 	# Determine how many neighbors to use for weighting in the KNN classifier
-	if n_neighbors is None:
+	if n_neighbors is None or n_neighbors == 'auto':
 		n_neighbors = int(round(math.sqrt(len(X))))
 		if verbose:
 			print("Chose n_neighbors automatically:", n_neighbors)
@@ -91,7 +91,7 @@ def main(argv):
 		print("Found only {} persons ".format(persons))
 		exit()
 
-	if N_NEIGHBORS != None:
+	if N_NEIGHBORS != None and N_NEIGHBORS != 'auto':
 	# tento converter para inteiro
 		try:
 			N_NEIGHBORS = int(N_NEIGHBORS)
