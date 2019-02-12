@@ -84,13 +84,7 @@ def main(argv):
 	N_NEIGHBORS = os.getenv('N_NEIGHBORS')
 
 	model_save_path = ''
-
-	persons = len(os.listdir(DATASET_DIR))
-	if persons <= 1:
-		print("Insufficient people")
-		print("Found only {} persons ".format(persons))
-		exit()
-
+	
 	if N_NEIGHBORS != None and N_NEIGHBORS != 'auto':
 	# tento converter para inteiro
 		try:
