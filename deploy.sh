@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+MAJOR=''
+MINOR=''
+PATCH=''
+VARIANT=''
+TAG=''
+
 function build_image(){
     docker build -f $1 --rm -t $2 $3
 }
@@ -11,16 +17,25 @@ function building(){
     docker tag "$DOCKER_USERNAME/web_face_recognition:latest" "$DOCKER_USERNAME/web_face_recognition:$TAG"
 }
 
+function info(){
+    MAJOR=$(echo $TAG | cut -d'.' -f1)
+    MINOR=$(echo $TAG | cut -d'.' -f2)
+    PATCH=$(echo $TAG | cut -d'.' -f3)
+    VARIANT=$(echo $TAG | cut -d'-' -f2)
+
+    MAJOR=${MAJOR%-*}
+    MINOR=${MINOR%-*}
+    PATCH=${PATCH%-*}
+
+    echo Major: $MAJOR
+    test $(echo ${TAG} | tr -cd "." | wc -c ) -ge 1 && echo Minor: $MINOR
+    test $(echo ${TAG} | tr -cd "." | wc -c ) -ge 2 && echo Patch: $PATCH
+    test $(echo ${TAG} | tr -cd "-" | wc -c ) -ge 1 && echo VARIANT: $VARIANT
+}
+
 function main(){
 
-MAJOR=$(echo $TAG | cut -d'.' -f1)
-MINOR=$(echo $TAG | cut -d'.' -f2)
-PATCH=$(echo $TAG | cut -d'.' -f3)
-
-
-echo Major: $MAJOR
-test $(echo ${TAG} | tr -cd "." | wc -c ) -ge 1 && echo Minor: $MINOR
-test $(echo ${TAG} | tr -cd "." | wc -c ) -ge 2 && echo Patch: $PATCH
+info
 
 building
 
@@ -46,8 +61,8 @@ if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then
 fi
 
 if [ -z "$@" ]; then
-    echo "Error!"
-    exit
+    echo "No arguments passed!"
+    exit 1
 fi
 
 TAG="$1"
