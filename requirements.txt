@@ -2,3 +2,4 @@ Flask
 python-dotenv
 sklearn
 face_recognition
+imutils
