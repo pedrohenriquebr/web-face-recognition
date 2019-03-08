@@ -46,8 +46,11 @@ clean: docker-compose.yml
 rmi:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
 
+encoding:
+	@docker-compose exec web python3 encoding.py
+	
 # Train the face recognition model
-train:
+train: dataset/encodings.csv
 	@docker-compose exec web python3 training.py
 
 # Enter the terminal
