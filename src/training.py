@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import settings
 import os
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
@@ -7,10 +8,12 @@ from sklearn import neighbors
 import os.path
 import pickle
 import sys
+import pandas as pd
+
 
 ENV_APP = os.getenv('ENV_APP')
 
-def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
+def train(train_dir, model_save_path=None, encodings_csv=False, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
 	"""
 	Trains a k-nearest neighbors classifier for face recognition.
 
@@ -38,27 +41,32 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 	X = []
 	y = []
 
-	# Loop through each person in the training set
-	for class_dir in os.listdir(train_dir):
-		if not os.path.isdir(os.path.join(train_dir, class_dir)):
-			continue
+	if encodings_csv:
+		base = pd.read_csv(os.path.join(train_dir,'encodings.csv'))
+		y = base.iloc[:,0].values
+		X = base.iloc[:,1:].values
+	else:
+		# Loop through each person in the training set
+		for class_dir in os.listdir(train_dir):
+			if not os.path.isdir(os.path.join(train_dir, class_dir)):
+				continue
 
-		# Loop through each training image for the current person
-		for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
-			print('Found image: %s'%(img_path))
-			image = face_recognition.load_image_file(img_path)
-			face_bounding_boxes = face_recognition.face_locations(image,model=model)
+			# Loop through each training image for the current person
+			for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
+				print('Found image: %s'%(img_path))
+				image = face_recognition.load_image_file(img_path)
+				face_bounding_boxes = face_recognition.face_locations(image,model=model)
 
-			if len(face_bounding_boxes) != 1:
-				# If there are no people (or too many people) in a training image, skip the image.
-				if verbose:
-					print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
+				if len(face_bounding_boxes) != 1:
+					# If there are no people (or too many people) in a training image, skip the image.
+					if verbose:
+						print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
 						face_bounding_boxes) < 1 else "Found more than one face"))
-			else:
-				# Add face encoding for current image to the training set
-				X.append(face_recognition.face_encodings(
-					image, known_face_locations=face_bounding_boxes)[0])
-				y.append(class_dir)
+				else:
+					# Add face encoding for current image to the training set
+					X.append(face_recognition.face_encodings(
+						image, known_face_locations=face_bounding_boxes)[0])
+					y.append(class_dir)
 
 	# Determine how many neighbors to use for weighting in the KNN classifier
 	if n_neighbors is None or n_neighbors == 'auto':
@@ -94,12 +102,12 @@ def main(argv):
 	model_save_path = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
 	
 	print("Starting training...")
-	train(DATASET_DIR, model_save_path=model_save_path, n_neighbors=N_NEIGHBORS,verbose=(ENV_APP == 'devel'),model=FACE_DETECTION_MODEL)
+	train(DATASET_DIR, model_save_path=model_save_path, encodings_csv=True,
+														n_neighbors=N_NEIGHBORS,
+														verbose=True,
+														model=FACE_DETECTION_MODEL)
 	print("Training finished!")
 
 if __name__ == "__main__":
-	if ENV_APP == "devel":
-		main(sys.argv)
-	else:
-		print("Not allowed!")
+	main(sys.argv)
 	

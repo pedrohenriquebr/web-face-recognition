@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
-
+# The .env file should override environment variables
+load_dotenv(verbose=True)
 all_keys = os.environ.keys()
 
 # The default values
@@ -25,5 +26,3 @@ if not 'UNKNOWN_LABEL' in all_keys:
 if not 'THRESHOLD' in all_keys:
     os.environ['THRESHOLD']='FALSE'
 
-# The .env file should override environment variables
-load_dotenv()

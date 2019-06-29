@@ -6,7 +6,7 @@
 
 * Docker 18.06+
 * Docker Compose 1.23.1+
-* Python 3.3+ ou Python 2.7
+* Python 3.3+
 * Linux (distro baseada no Debian)
 
 ### Metas

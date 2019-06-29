@@ -7,7 +7,7 @@ import argparse
 RECOGNITION_HOST=os.getenv('RECOGNITION_HOST','webfacerecognition.local')
 
 def send_image(image_path):
-   url = 'http://{RECOGNITION_HOST}/api/recognition'.format(
+   url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(
       RECOGNITION_HOST=RECOGNITION_HOST)
    files = {'file': open(image_path, 'rb')}
    r = requests.post(url, files=files)
