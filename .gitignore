@@ -3,10 +3,14 @@
 # Created by https://www.gitignore.io/api/flask,images,python,web
 # Edit at https://www.gitignore.io/?templates=flask,images,python,web
 
-modelset/
-dataset/
-testset/
+!modelset/.gitkeep
+modelset/*
+!dataset/.gitkeep
+dataset/*
+!testset/.gitkeep
+testset/* 
 
+backup-*.zip
 ### Flask ###
 instance/*
 !instance/.gitignore
