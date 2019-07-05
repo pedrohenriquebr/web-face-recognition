@@ -2,7 +2,10 @@ services:
   - docker
 
 dist: trusty
-
+addons:
+  hosts:
+    - webfacerecognition.local
+  
 env:
   COMPOSE_VERSION: 1.23.1
 
@@ -12,7 +15,9 @@ before_script:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - bash bootstrap.sh
+  - wget -c "" -O backup.zip
+  - echo "A" | unzip -x backup.zip
   - make build
-  - make run-dev
+  - make run
+  - make train
   - docker-compose logs
