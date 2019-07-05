@@ -1,0 +1,79 @@
+body {
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+#resultado ul {
+    margin: 0 0 0 .2em;
+    list-style: none;
+}
+
+#resultado li {
+    padding: 0;
+    margin: 0;
+}
+
+
+#resultado li:after {
+    content: ',';
+}
+
+
+#resultado li:last-child:after {
+    content: '';
+}
+
+
+#resultado span.object {
+    font-weight: bold;
+}
+
+
+#resultado span.string, span.string a {
+    color: green;
+}
+
+
+#resultado span.string:before {
+    content: '"';
+}
+
+
+#resultado span.string:after {
+    content: '"';
+}
+
+
+#resultado span.number {
+    color: blue;
+}
+
+
+#resultado span.null {
+    color: red;
+}
+
+
+#resultado span.boolean {
+    color: gray;
+}
+
+
+#resultado span.link a {
+    color: green;
+    text-decoration: underline;
+}
+
+
+#resultado textarea {
+    font-family: monospace;
+    font-size: 1.1em;
+    width: 98%;
+    height: 30%;
+}
+
+
+#resultado pre {
+    word-wrap: initial !important;
+    white-space: pre !important;
+}
