@@ -35,4 +35,5 @@ script:
   - make build
   - make run
   - docker-compose logs
+  - sleep 15
   - for i in testset/*.jpeg; do python3 recog.py $i ; done
