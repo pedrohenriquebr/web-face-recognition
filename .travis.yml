@@ -8,6 +8,7 @@ addons:
   
 env:
   COMPOSE_VERSION: 1.23.1
+  BACKUP_URL: https://github.com/pedrohenriquebr/web-face-recognition/raw/backups/backup-2019-07-04.zip
 
 before_script:
   - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -15,9 +16,15 @@ before_script:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - wget -c "" -O backup.zip
+  - wget -c "$BACKUP_URL" -O backup.zip
   - echo "A" | unzip -x backup.zip
+  - bash standard.sh
+  - make build
+  - make run-dev
+  - make encoding
+  - make train
+  - make clean
   - make build
   - make run
-  - make train
   - docker-compose logs
+  - for i in testset/*.jpeg; do python3 recog.py $i ; done
