@@ -10,9 +10,21 @@ def send_image(image_path):
    url = 'http://{RECOGNITION_HOST}:5000/api/recognition'.format(
       RECOGNITION_HOST=RECOGNITION_HOST)
    files = {'file': open(image_path, 'rb')}
-   r = requests.post(url, files=files)
-   return json.loads(r.text)
+   r = requests.post(url, files=files,)
+   response = []
+   print('Retrieved ',len(r.text),' characters')
+   
+   if len(r.text) == 0 :
+      print('Response is None')
+      print(r.text)
+      exit(1)
+   
+   try:
+      response = json.loads(r.text)
+   except Exception as e:
+      print('I can\'t decode data to JSON: \n',r.text,'\n\n')
 
+   return response
 
 
 def main():

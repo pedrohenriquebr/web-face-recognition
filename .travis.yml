@@ -31,10 +31,12 @@ script:
   - make run-dev
   - make encoding
   - make train
+  - docker-compose logs
+  - for i in testset/*.jpeg; do sleep 20; python3 recog.py $i;  done
+  - docker-compose logs 
   - make clean
   - make build
   - make run
   - docker-compose logs
-  - sleep 15
-  - for i in testset/*.jpeg; do python3 recog.py $i; sleep 30; done
+  - for i in testset/*.jpeg; do sleep 20; python3 recog.py $i;  done
   - docker-compose logs
