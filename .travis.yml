@@ -2,6 +2,14 @@ services:
   - docker
 
 dist: trusty
+language: python
+
+python:
+  - "3.6"
+
+install:
+  - pip install requests
+
 addons:
   hosts:
     - webfacerecognition.local
