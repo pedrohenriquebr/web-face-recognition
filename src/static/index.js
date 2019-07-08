@@ -135,7 +135,7 @@ function sendImage() {
   var img = document.getElementById('imageLoader').files[0];
   formData.append('file', img);
   $.ajax({
-    url: "/api/recognition", // url where to submit the request
+    url: "/api/recognition/svm", // url where to submit the request
     type: "POST", // type of action POST || GET
     dataType: 'json', // data type
     data: formData, // post data || get data,

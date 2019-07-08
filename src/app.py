@@ -2,9 +2,10 @@ import os
 import signal
 from multiprocessing import Process
 import face_recognition
-import prediction
+import prediction_knn
+import prediction_svm
+
 import settings
-import training
 from flask import Flask, jsonify, redirect, render_template, request
 from werkzeug.utils import secure_filename
 import socket
@@ -15,6 +16,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
 MODELSET_DIR = os.getenv('MODELSET_DIR')
 KNN_MODEL  = os.getenv('KNN_MODEL')
+SVM_MODEL  = os.getenv('SVM_MODEL')
 THRESHOLD = os.getenv('THRESHOLD')
 ENV_APP = os.getenv('ENV_APP')
 
@@ -25,8 +27,8 @@ def allowed_file(filename):
 	return '.' in filename and \
 		   filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/api/recognition',methods=['POST'])
-def face_recognition_api():
+@app.route('/api/recognition/<clf>',methods=['POST'])
+def face_recognition_api(clf):
 	# por enquanto somente KNN
 	if request.method == 'POST':
 		if 'file' not in request.files:
@@ -34,13 +36,12 @@ def face_recognition_api():
 		
 		file = request.files['file']
 		model = FACE_DETECTION_MODEL
-		
+
 		if file.filename == '':
 			return redirect(request.url)
 
 		if file and allowed_file(file.filename):
-			return detect_faces_in_image(file,model=model)
-	
+			return detect_faces_in_image(file,model=model,clf=clf)
 
 if ENV_APP == 'devel':
 	@app.route('/', methods=['GET'])
@@ -48,19 +49,23 @@ if ENV_APP == 'devel':
 		return render_template('index.html')
 
 
-def detect_faces_in_image(file_stream,model='hog'):
+def detect_faces_in_image(file_stream,model='hog',clf='svm'):
 
 	app.logger.debug('MODELSET_DIR: {}'.format(MODELSET_DIR))
-	app.logger.debug('KNN_MODEL: {}'.format(KNN_MODEL))
-	app.logger.debug('THRESOLD: {}'.format(THRESHOLD))
-
 	img  = face_recognition.load_image_file(file_stream)
-	classifier_model = os.path.join(MODELSET_DIR, KNN_MODEL)
-		
-	recognition = prediction.predict_frame(img,model_path=classifier_model,model=model)
-	#landmarks  = face_recognition.face_landmarks(img)
-	#app.logger.debug(' resultado : {}'.format(result))
-	#app.logger.debug(' landmarks: {}'.format(landmarks))
+	recognition = []
+	classifier_model = None 
+	if clf == 'svm':
+		app.logger.debug('SVM_MODEL: {}'.format(SVM_MODEL))
+		classifier_model = os.path.join(MODELSET_DIR, SVM_MODEL)
+		recognition = prediction_svm.predict_frame(img,model_path=classifier_model,model=model)
+
+	elif clf == 'knn':
+		app.logger.debug('KNN_MODEL: {}'.format(KNN_MODEL))
+		app.logger.debug('THRESOLD: {}'.format(THRESHOLD))
+		classifier_model = os.path.join(MODELSET_DIR, KNN_MODEL)
+		recognition = prediction_knn.predict_frame(img,model_path=classifier_model,model=model)
+
 	app.logger.debug(' recognition: {}'.format(recognition))
 	return jsonify(recognition)		   
 
