@@ -9,7 +9,7 @@ modelset/*
 dataset/*
 !testset/.gitkeep
 testset/* 
-
+src/.env
 backup-*.zip
 ### Flask ###
 instance/*
