@@ -64,9 +64,18 @@ rmi:
 encoding:
 	@docker-compose exec web python3 encoding.py
 	
-# Train the face recognition model
+# Train all the face recognition models
 train: $(DATASETDIR)/encodings.csv
-	@docker-compose exec web python3 training.py
+	@docker-compose exec web python3 training_svm.py
+	@docker-compose exec web python3 training_knn.py
+
+# Train the knn model
+train-knn: $(DATASETDIR)/encodings.csv
+	@docker-compose exec web python3 training_knn.py
+
+# Train the svm model 
+train-svm: $(DATASETDIR)/encodings.csv
+	@docker-compose exec web python3 training_svm.py
 
 # Enter the terminal
 terminal:

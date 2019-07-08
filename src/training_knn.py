@@ -80,7 +80,7 @@ def main(argv):
 		except:
 			n_neighbors = 1
 	model_save_path = os.path.join(MODELSET_DIR, KNN_MODEL)
-	print("Starting training...")
+	print("Starting KNN model training...")
 	train(DATASET_DIR, model_save_path=model_save_path,
 		  n_neighbors=n_neighbors,
 		  verbose=True,

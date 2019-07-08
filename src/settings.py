@@ -14,6 +14,9 @@ if not 'MODELSET_DIR' in all_keys:
 if not 'KNN_MODEL' in all_keys:
     os.environ['KNN_MODEL']='trained_knn_model.clf'
 
+if not 'SVM_MODEL' in all_keys:
+    os.environ['SVM_MODEL']='trained_svm_model.clf'
+
 if not 'N_NEIGHBORS' in all_keys:
     os.environ['N_NEIGHBORS']=''
 
