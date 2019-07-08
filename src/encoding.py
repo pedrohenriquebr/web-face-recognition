@@ -49,7 +49,7 @@ def encoding(dataset_dir,encoding_file='encodings.csv', verbose=False,model='hog
 def main(argv):
 	DATASET_DIR = os.getenv('DATASET_DIR')
 
-	encoding(DATASET_DIR, verbose=True,model='cnn')
+	encoding(DATASET_DIR, verbose=True,model=os.getenv('FACE_DETECTION_MODEL'))
 
 if __name__ == "__main__":
 	main(sys.argv)
