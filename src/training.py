@@ -11,9 +11,15 @@ import sys
 import pandas as pd
 
 
-ENV_APP = os.getenv('ENV_APP')
 
-def train(train_dir, model_save_path=None, encodings_csv=False, n_neighbors=None, knn_algo='ball_tree', verbose=False,model='hog'):
+ENV_APP = os.getenv('ENV_APP')
+DATASET_DIR = os.getenv('DATASET_DIR')
+FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL', 'hog')
+N_NEIGHBORS = os.getenv('N_NEIGHBORS')
+MODELSET_DIR = os.getenv('MODELSET_DIR')
+KNN_MODEL = os.getenv('KNN_MODEL')
+
+def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False, model='hog'):
 	"""
 	Trains a k-nearest neighbors classifier for face recognition.
 
@@ -22,15 +28,15 @@ def train(train_dir, model_save_path=None, encodings_csv=False, n_neighbors=None
 	 (View in source code to see train_dir example tree structure)
 
 	 Structure:
-		<train_dir>/
-		├── <person1>/
-		│   ├── <somename1>.jpeg
-		│   ├── <somename2>.jpeg
-		│   ├── ...
-		├── <person2>/
-		│   ├── <somename1>.jpeg
-		│   └── <somename2>.jpeg
-		└── ...
+			<train_dir>/
+			├── <person1>/
+			│   ├── <somename1>.jpeg
+			│   ├── <somename2>.jpeg
+			│   ├── ...
+			├── <person2>/
+			│   ├── <somename1>.jpeg
+			│   └── <somename2>.jpeg
+			└── ...
 
 	:param model_save_path: (optional) path to save model on disk
 	:param n_neighbors: (optional) number of neighbors to weigh in classification. Chosen automatically if not specified
@@ -41,32 +47,9 @@ def train(train_dir, model_save_path=None, encodings_csv=False, n_neighbors=None
 	X = []
 	y = []
 
-	if encodings_csv:
-		base = pd.read_csv(os.path.join(train_dir,'encodings.csv'))
-		y = base.iloc[:,0].values
-		X = base.iloc[:,1:].values
-	else:
-		# Loop through each person in the training set
-		for class_dir in os.listdir(train_dir):
-			if not os.path.isdir(os.path.join(train_dir, class_dir)):
-				continue
-
-			# Loop through each training image for the current person
-			for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
-				print('Found image: %s'%(img_path))
-				image = face_recognition.load_image_file(img_path)
-				face_bounding_boxes = face_recognition.face_locations(image,model=model)
-
-				if len(face_bounding_boxes) != 1:
-					# If there are no people (or too many people) in a training image, skip the image.
-					if verbose:
-						print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
-						face_bounding_boxes) < 1 else "Found more than one face"))
-				else:
-					# Add face encoding for current image to the training set
-					X.append(face_recognition.face_encodings(
-						image, known_face_locations=face_bounding_boxes)[0])
-					y.append(class_dir)
+	base = pd.read_csv(os.path.join(train_dir, 'encodings.csv'))
+	y = base.iloc[:, 0].values
+	X = base.iloc[:, 1:].values
 
 	# Determine how many neighbors to use for weighting in the KNN classifier
 	if n_neighbors is None or n_neighbors == 'auto':
@@ -85,29 +68,25 @@ def train(train_dir, model_save_path=None, encodings_csv=False, n_neighbors=None
 			pickle.dump(knn_clf, f)
 
 	return knn_clf
-	
-def main(argv):
-	DATASET_DIR = os.getenv('DATASET_DIR')
-	FACE_DETECTION_MODEL = os.getenv('FACE_DETECTION_MODEL','hog')
-	N_NEIGHBORS = os.getenv('N_NEIGHBORS')
 
+
+def main(argv):
+	n_neighbors = 'auto'
 	model_save_path = ''
-	
 	if N_NEIGHBORS != None and N_NEIGHBORS != 'auto':
-	# tento converter para inteiro
+		# tento converter para inteiro
 		try:
-			N_NEIGHBORS = int(N_NEIGHBORS)
+			n_neighbors = int(N_NEIGHBORS)
 		except:
-			N_NEIGHBORS = 1
-	model_save_path = os.path.join(os.getenv('MODELSET_DIR'), os.getenv('KNN_MODEL'))
-	
+			n_neighbors = 1
+	model_save_path = os.path.join(MODELSET_DIR, KNN_MODEL)
 	print("Starting training...")
-	train(DATASET_DIR, model_save_path=model_save_path, encodings_csv=True,
-														n_neighbors=N_NEIGHBORS,
-														verbose=True,
-														model=FACE_DETECTION_MODEL)
+	train(DATASET_DIR, model_save_path=model_save_path,
+		  n_neighbors=n_neighbors,
+		  verbose=True,
+		  model=FACE_DETECTION_MODEL)
 	print("Training finished!")
+
 
 if __name__ == "__main__":
 	main(sys.argv)
-	
