@@ -1,5 +1,3 @@
-
-
 import math
 from sklearn import svm
 import os
@@ -11,23 +9,6 @@ from face_recognition.face_recognition_cli import image_files_in_folder
 import sys
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-
-def load():
-    svm_clf = None
-
-    with open(os.path.join(MODELSET_DIR, SVM_MODEL), 'rb') as f:
-        svm_clf = pickle.load(f)
-
-    file_stream = open('../dataset/rihanna/0006.jpeg', 'rb')
-    img = face_recognition.load_image_file(file_stream)
-    X_face_locations = face_recognition.face_locations(
-        img, model=FACE_DETECTION_MODEL)
-    faces_encodings = face_recognition.face_encodings(
-        img, known_face_locations=X_face_locations)
-
-    print(svm_clf.predict(faces_encodings))
-
 
 def predict(X_img_path, svm_clf=None, model_path=None, model='hog'):
     """
