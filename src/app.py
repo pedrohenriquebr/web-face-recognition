@@ -52,6 +52,7 @@ if ENV_APP == 'devel':
 def detect_faces_in_image(file_stream,model='hog',clf='svm'):
 
 	app.logger.debug('MODELSET_DIR: {}'.format(MODELSET_DIR))
+	app.logger.debug('FACE_DETECTION_MODEL: {}'.format(FACE_DETECTION_MODEL))
 	img  = face_recognition.load_image_file(file_stream)
 	recognition = []
 	classifier_model = None 
