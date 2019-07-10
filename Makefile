@@ -44,12 +44,14 @@ status: docker-compose.yml
 clean: docker-compose.yml
 	@docker-compose down
 
+# Remove files
 clean-data:
 	@echo 'cleaning..'
 	rm -rf $(DATASETDIR)/*
 	rm -rf $(TESTSETDIR)/*
 	rm -rf $(MODELSETDIR)/*
 
+# Backing up $DATASETDIR, $MODELSETDIR, $TESTSETDIR
 backup:
 	@mkdir -p tmp ;\
 	cp -r $(DATASETDIR) $(MODELSETDIR) $(TESTSETDIR) ./tmp/ ;\
@@ -61,6 +63,7 @@ backup:
 rmi:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
 
+# Extract face encodings from $DATASETDIR images and save it in encodings.csv
 encoding:
 	@docker-compose exec web python3 encoding.py
 	
@@ -80,13 +83,3 @@ train-svm: $(DATASETDIR)/encodings.csv
 # Enter the terminal
 terminal:
 	@docker-compose exec web bash
-
-standard-dataset: standard.sh
-	@for i in $(DATASETDIR)/* ; do \
-		bash standard.sh "$$i" ;\
-	done
-
-standard-testset: standard.sh
-	@for i in $(TESTSET)/* ; do \
-		bash standard.sh "$$i" ;\
-	done
