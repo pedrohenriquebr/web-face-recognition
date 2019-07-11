@@ -10,8 +10,8 @@ var msg = null;
 var img_width = 0;
 var img_height = 0;
 var n_persons = 0;
-
-
+var img_url = null;
+var searchButton = null;
 
 var JSON_PRETTY = function (string) {
 
@@ -80,9 +80,13 @@ $(function () {
   canvas = document.getElementById('imageCanvas');
   img_tag = document.getElementById('canvasImg');;
   msg = $('#mensagem');
+  img_url = $("#imageURL")[0];
+  searchButton = $("#searchButton")[0];
+
   n_persons = 0;
   ctx = canvas.getContext('2d');
   imageLoader.addEventListener('change', handleImage, false);
+  searchButton.addEventListener('click', handleImageURL, false);
 });
 
 function handleImage(e) {
@@ -109,10 +113,54 @@ function handleImage(e) {
     }
     img.src = event.target.result;
   }
+  msg.html('aguarde um momento por favor...');
   reader.readAsDataURL(e.target.files[0]);
-  sendImage();
+  sendImage(e.target.files[0]);
 
 }
+
+async function downloadImage(url) {
+  return await fetch(url, {
+    headers: {
+      'accept': 'image/jpeg'
+    },
+    method: 'GET'
+  }
+  ).then(d => d.blob()).then(d => d);
+}
+
+function handleImageURL(e) {
+  var reader = new FileReader();
+  clear_all();
+  reader.onload = function (event) {
+    var img = new Image();
+    img.onload = function () {
+      // se a a altura for maior do que 345px
+      canvas.width = img.width;
+      canvas.height = img.height;
+      img_width = img.width;
+      img_height = img.height;
+
+      if (img.height > 345) {
+        console.log('foto grande');
+        big_picture = true;
+      } else {
+        big_picture = false;
+        console.log('foto dentro das margens');
+      }
+
+      ctx.drawImage(img, 0, 0);
+    }
+    img.src = event.target.result;
+  }
+  msg.html('aguarde um momento por favor...');
+
+  downloadImage(img_url.value).then(blob_file => {
+    reader.readAsDataURL(blob_file);
+    sendImage(new File([blob_file],'img.jpeg'));
+  });
+}
+
 
 
 function clear_all() {
@@ -130,18 +178,17 @@ function update_img_tag() {
   img_tag.src = dataURL;
 }
 
-function sendImage() {
+function sendImage(img) {
   var formData = new FormData();
-  var img = document.getElementById('imageLoader').files[0];
   formData.append('file', img);
-  $.ajax({
-    url: "/api/recognition", // url where to submit the request
-    type: "POST", // type of action POST || GET
-    dataType: 'json', // data type
-    data: formData, // post data || get data,
-    processData: false,
-    contentType: false,
-    success: function (result) {
+
+
+  fetch('/api/recognition/svm', {
+    method: 'post',
+    body: formData
+  })
+    .then(d => d.json())
+    .then(function (result) {
       array_obj = result;
       json_result = JSON.stringify(result);
       console.log('Typeof: ' + typeof (array_obj));
@@ -150,21 +197,15 @@ function sendImage() {
       update_img_tag();
       n_persons = array_obj.length;
       msg.html('tem ' + n_persons + (n_persons > 1 ? ' pessoas' : ' pessoa'));
-    },
-    progress: function (e) {
-      msg.html('aguarde um momento por favor...');
-    },
-    error: function (xhr, resp, text) {
-      console.log(xhr, resp, text);
-    }
-  });
+    });
+
 }
 
 function drawFaceLocation(array) {
 
   size = 19;
   if (big_picture) {
-    size = 19 * (img_height/345);
+    size = 19 * (img_height / 345);
   }
   console.log('size: ' + size);
   for (n in array) {
