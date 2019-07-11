@@ -16,7 +16,7 @@ addons:
   
 env:
   COMPOSE_VERSION: 1.23.1
-  BACKUP_URL: https://github.com/pedrohenriquebr/web-face-recognition/raw/backups/backup-2019-07-05.zip
+  BACKUP_URL: https://github.com/pedrohenriquebr/web-face-recognition/raw/backups/backup-2019-07-11.zip
 
 before_script:
   - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
