@@ -11,9 +11,34 @@ BACKUP_FILENAME := backup-$(shell date +"%Y-%m-%d").zip
 
 .PHONY: build run run-dev stop status stop clean rmi rmi-all train terminal
 
+# All production environment tasks
 all:
 	@make build
+	@make run
+	@make encoding
+	@make train
 
+# SVM training 
+all-svm:
+	@make build
+	@make run
+	@make encoding
+	@make train-svm
+	
+# All development environment tasks
+all-dev:
+	@make build
+	@make run-dev
+	@make encoding
+	@make train
+
+# SVM training in development environment
+all-svm-dev:
+	@make build
+	@make run-dev
+	@make encoding
+	@make train-svm
+	
 %.yml: $(WEB_FACE_RECOGNITION_DOCKERFILE)
 
 # Base image building
@@ -28,8 +53,12 @@ build: $(WEB_FACE_RECOGNITION_DOCKERFILE) src $(MODELSETDIR)
 run: production.yml $(MODELSETDIR)/*.clf
 	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
 
+# Development cycle
+restart: clean build 
+
 # Run  development environment
 run-dev: docker-compose.yml $(MODELSETDIR) 
+	@echo "Running in development mode..."
 	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
 
 # Stop containers
@@ -65,6 +94,7 @@ rmi:
 
 # Extract face encodings from $DATASETDIR images and save it in encodings.csv
 encoding:
+	@echo "Extracting faces encodings..."
 	@docker-compose exec web python3 encoding.py
 	
 # Train all the face recognition models
