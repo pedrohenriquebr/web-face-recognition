@@ -39,7 +39,7 @@ def train(train_dir, model_save_path=None, verbose=False, model='hog'):
     """
     X = []
     y = []
-    base = pd.read_csv(os.path.join(train_dir, 'encodings.csv'))
+    base = pd.read_csv(os.path.join(train_dir, 'encodings.csv'),header=None)
     y = base.iloc[:, 0].values
     X = base.iloc[:, 1:].values
 
