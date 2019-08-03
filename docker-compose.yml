@@ -1,11 +1,5 @@
 version: '3'
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    ports:
-      - "5000:80"
   web:
     build: .
     image: pedrobraga/web_face_recognition:latest
@@ -17,5 +11,5 @@ services:
       - ./modelset:/modelset:rw
     labels:
       - 'app.environment=${ENV_APP}'
-      
-
+    ports: 
+      - "5000:5000"
