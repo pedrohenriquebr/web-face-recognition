@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
-import os
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 import os.path
 import sys
 import numpy as np
+
 import settings
+import os
 import pandas as pd
-ENV_APP = os.getenv('ENV_APP')
 
 def encoding(dataset_dir,encoding_file='encodings.csv', verbose=False,model='hog'):
 	X = []
@@ -114,6 +114,14 @@ def make_cache(path,class_dir='',model='hog'):
 			encodings = X
 	return is_cached,encodings
 
+def load_encodings(path,filename='encodings.csv'):
+	X = []
+	y = []
+	base = pd.read_csv(os.path.join(path, filename),header=None)
+	y = base.iloc[:, 0].values
+	X = base.iloc[:, 1:].values
+
+	return X,y
 
 def main(argv):
 	DATASET_DIR = os.getenv('DATASET_DIR')

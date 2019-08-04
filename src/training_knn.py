@@ -1,15 +1,15 @@
-# -*- encoding: utf-8 -*-
-import settings
-import os
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 import math
-from sklearn import neighbors
-import os.path
 import pickle
 import sys
 import pandas as pd
+from sklearn import neighbors
 
+import settings
+import os
+import os.path
+import encoding
 
 
 ENV_APP = os.getenv('ENV_APP')
@@ -44,12 +44,8 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 	:param verbose: verbosity of training
 	:return: returns knn classifier that was trained on the given data.
 	"""
-	X = []
-	y = []
-
-	base = pd.read_csv(os.path.join(train_dir, 'encodings.csv'),header=None)
-	y = base.iloc[:, 0].values
-	X = base.iloc[:, 1:].values
+	
+	X, y  = encoding.load_encodings(train_dir)
 
 	# Determine how many neighbors to use for weighting in the KNN classifier
 	if n_neighbors is None or n_neighbors == 'auto':
