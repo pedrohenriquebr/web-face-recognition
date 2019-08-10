@@ -39,3 +39,6 @@ for i in dataset/*; do
     fi
 
 done
+
+
+standardize "$PWD/dataset-raw"

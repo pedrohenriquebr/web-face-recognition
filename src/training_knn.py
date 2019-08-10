@@ -45,7 +45,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 	:return: returns knn classifier that was trained on the given data.
 	"""
 	
-	X, y  = encoding.load_encodings(train_dir)
+	X, y  = encoding.load_encodings_csv(train_dir)
 
 	# Determine how many neighbors to use for weighting in the KNN classifier
 	if n_neighbors is None or n_neighbors == 'auto':

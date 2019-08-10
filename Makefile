@@ -113,3 +113,15 @@ train-svm: $(DATASETDIR)/encodings.csv
 # Enter the terminal
 terminal:
 	@docker-compose exec web bash
+
+
+# standard => encoding-raw => train-dbscan => clustering => encoding-clusters
+test-clusters:
+	bash standard.sh &&\
+	rm -rf ./dataset-clusters/* &&\
+	cd src &&\
+	python3 encoding.py raw &&\
+	python3 training_dbscan.py &&\
+	python3 clustering.py &&\
+	python3 encoding.py  clusters &&\
+	python3 prediction_dbscan.py

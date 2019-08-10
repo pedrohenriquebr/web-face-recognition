@@ -8,6 +8,8 @@ services:
     volumes:
       - ./src:/root/face_recognition:ro
       - ./dataset:/dataset:rw
+      - ./dataset-raw:/dataset-raw:rw
+      - ./dataset-clusters:/dataset-clusters:rw
       - ./modelset:/modelset:rw
     labels:
       - 'app.environment=${ENV_APP}'

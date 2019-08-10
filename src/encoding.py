@@ -8,125 +8,131 @@ import numpy as np
 import settings
 import os
 import pandas as pd
+from cachesystem import CacheSystem
 
-def encoding(dataset_dir,encoding_file='encodings.csv', verbose=False,model='hog'):
-	X = []
-	y = []
 
-	# Loop through each person in the training set
-	for class_dir in os.listdir(dataset_dir):
-		if not os.path.isdir(os.path.join(dataset_dir, class_dir)):
-			continue
+def encoding(dataset_dir, encoding_file='encodings.csv', verbose=False, model='hog'):
+    X = []
+    y = []
 
-		# Loop through each training image for the current person
-		for img_path in image_files_in_folder(os.path.join(dataset_dir, class_dir)):
-			print('Found image: %s'%(img_path),end='')
-			image = face_recognition.load_image_file(img_path)
+    # Loop through each person in the training set
+    for class_dir in os.listdir(dataset_dir):
+        if not os.path.isdir(os.path.join(dataset_dir, class_dir)) or class_dir in ['__cache__']:
+            continue
+        cache = CacheSystem(
+            dataset_dir, cache_dir=os.path.join('__cache__', class_dir))
 
-			face_bounding_boxes = face_recognition.face_locations(image,model=model)
-			if len(face_bounding_boxes) != 1:
-				# If there are no people (or too many people) in a training image, skip the image.
-				if verbose:
-					print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
-						face_bounding_boxes) < 1 else "Found more than one face"))
-			else:
-				# Add face encoding for current image to the training set
-				is_cached, encodings = make_cache(img_path,class_dir,model)
-				X.append(encodings)
-				y.append(class_dir)
+        # Loop through each training image for the current person
+        for img_path in image_files_in_folder(os.path.join(dataset_dir, class_dir)):
+            print('Found image: %s' % (img_path), end='')
+            image = face_recognition.load_image_file(img_path)
 
-				print('=> cached: %s'%(is_cached))
+            face_bounding_boxes = face_recognition.face_locations(
+                image, model=model)
+            if len(face_bounding_boxes) != 1:
+                # If there are no people (or too many people) in a training image, skip the image.
+                if verbose:
+                    print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
+                        face_bounding_boxes) < 1 else "Found more than one face"))
+            else:
+                # Add face encoding for current image to the training set
+                """ is_cached, encodings = make_cache(img_path,class_dir,model) """
+                is_cached, encodings = cache.check(img_path, model=model)
+                X.append(encodings)
+                y.append(class_dir)
 
-	with open(os.path.join(dataset_dir,encoding_file),'wt') as f:
-		for name,encoding in zip(y,X):
-			f.write(name)
+                print('=> cached: %s' % (is_cached))
 
-			for i in range(128):
-				f.write(',')
-				f.write(str(encoding[i]))
+    # save to encodings.csv
+    save_encodings_csv(os.path.join(dataset_dir, encoding_file), X, y)
 
-			f.write('\n')
 
-'''
-1. I verify the cache dir
-2. I verify the sub cache dir for current person
-3. Is there any cache file for my current file ? 
-	Yes:
-		Verify the last modified date in time stamp
-		if the time stamp is differente, so I update cache file.
-		EXTRACTING FACE ENCODINGS
-	No:
+def encoding_nolabels(dataset_dir, encoding_file='encodings.csv', verbose=False, model='hog'):
+    X = []
+    labels = []
+    cache = CacheSystem(dataset_dir, cache_dir='__cache__')
 
-		Then, I create cache file, and write the 'name' person  
-		followed by the face encodings fields, separetd by commas .
-		EXTRACTING FACE ENCODINGS 
-'''
-def make_cache(path,class_dir='',model='hog'):
-	filename = path.split('/')[-1]
-	last_dot = len(filename) - 1 - filename[::-1].index('.')
-	cache_dir = os.path.join(os.getenv('DATASET_DIR'),'__cache__',class_dir)
-	cachename = os.path.join(cache_dir,filename[:last_dot]+'.csv')
-	encodings = []
-	is_cached = False
-	if not os.path.exists(os.path.join(os.getenv('DATASET_DIR'),'__cache__')):
-		os.mkdir(os.path.join(os.getenv('DATASET_DIR'),'__cache__'))
-		
-		
-	if not os.path.exists(cache_dir):
-		os.mkdir(cache_dir)
-	
+    # Loop through each training image for the current person
+    for img_path in image_files_in_folder(os.path.join(dataset_dir)):
+        print('Found image: %s' % (img_path), end='')
+        image = face_recognition.load_image_file(img_path)
 
-	# CREATE
-	if not os.path.exists(cachename):
-		is_cached = False
-		cache_file = open(cachename,'w')
-		image = face_recognition.load_image_file(path)
-		face_bounding_boxes = face_recognition.face_locations(image,model=model)
-		encodings = face_recognition.face_encodings(image, known_face_locations=face_bounding_boxes)[0]
-		# save face encodings
-		cache_file.write(class_dir)
-		for i in range(128):
-			cache_file.write(',')
-			cache_file.write(str(encodings[i]))
-		cache_file.close()
-	else:
-		is_cached = True
-		if os.stat(path).st_mtime > os.stat(cachename).st_mtime:
-			# Update cache
-			cache_file = open(cachename,'w')
-			image = face_recognition.load_image_file(path)
-			face_bounding_boxes = face_recognition.face_locations(image,model=model)
-			encodings = face_recognition.face_encodings(image, known_face_locations=face_bounding_boxes)[0]
-			# save face encodings
-			cache_file.write(class_dir)
-			for i in range(128):
-				cache_file.write(',')
-				cache_file.write(str(encodings[i]))
-			cache_file.close()
-			
-		else:
-			# Load
-			base = pd.read_csv(cachename,header=None)
+        face_bounding_boxes = face_recognition.face_locations(
+            image, model=model)
+        if len(face_bounding_boxes) != 1:
+             # If there are no people (or too many people) in a training image, skip the image.
+            if verbose:
+                print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(
+                    face_bounding_boxes) < 1 else "Found more than one face"))
+        else:
+            is_cached, encodings = cache.check(img_path, model=model)
+            X.append(encodings)
+            labels.append(img_path.split('/')[-1])
+            print('=> cached: %s' % (is_cached))
+    # save to encodings.csv
+    save_encodings_csv(os.path.join(
+        dataset_dir, encoding_file), X, labels=labels)
 
-			y = base.iloc[0, 0]
-			X = base.iloc[0, 1:].values
-			# load face encodings
-			encodings = X
-	return is_cached,encodings
 
-def load_encodings(path,filename='encodings.csv'):
-	X = []
-	y = []
-	base = pd.read_csv(os.path.join(path, filename),header=None)
-	y = base.iloc[:, 0].values
-	X = base.iloc[:, 1:].values
+def save_encodings_csv(dest_path, encodings, labels=None):
+    X = encodings
+    y = labels
 
-	return X,y
+    if labels == None:
+        with open(dest_path, 'wt') as f:
+            for encoding in X:
+                f.write(str(encoding[0]))
+                for i in range(1, 128):
+                    f.write(',')
+                    f.write(str(encoding[i]))
+                f.write('\n')
+
+        return
+
+    with open(dest_path, 'wt') as f:
+        for name, encoding in zip(y, X):
+            f.write(name)
+            for i in range(128):
+                f.write(',')
+                f.write(str(encoding[i]))
+
+            f.write('\n')
+
+
+def load_encodings_csv(path, filename='encodings.csv', labels=True):
+    X = []
+    y = []
+    base = pd.read_csv(os.path.join(path, filename), header=None)
+    if labels:
+        y = base.iloc[:, 0].values
+        X = base.iloc[:, 1:].values
+
+        return X, y
+
+    X = base.iloc[:].values
+    return X
+
 
 def main(argv):
-	DATASET_DIR = os.getenv('DATASET_DIR')
-	encoding(DATASET_DIR, verbose=True,model=os.getenv('FACE_DETECTION_MODEL'))
+    dataset = os.getenv('DATASET_DIR')
+    model = os.getenv('FACE_DETECTION_MODEL')
+
+    if len(sys.argv) == 2:
+        option = sys.argv[1]
+        if option == 'raw':
+            dataset = os.getenv('DATASET_RAW_DIR')
+            encoding_nolabels(dataset, verbose=True, model=model)
+        elif option == 'clusters':
+            dataset = os.getenv('DATASET_CLUSTERS_DIR')
+            encoding(dataset, verbose=True, model=model)
+        elif option == 'normal':
+            encoding(dataset, verbose=True, model=model)
+        else:
+            print('invalid option!')
+            exit(1)
+    else:
+        encoding(dataset, verbose=True, model=model)
+
 
 if __name__ == "__main__":
-	main(sys.argv)
-	
+    main(sys.argv)

@@ -38,7 +38,7 @@ def train(train_dir, model_save_path=None, verbose=False, model='hog'):
 	:param verbose: verbosity of training
 	:return: returns svm classifier that was trained on the given data.
 	"""
-	X,y = encoding.load_encodings(train_dir)
+	X,y = encoding.load_encodings_csv(train_dir)
 
 	# Create and train the KNN classifier
 	svm_clf = svm.SVC(kernel='linear')

@@ -6,7 +6,7 @@
 !modelset/.gitkeep
 modelset/*
 !dataset/.gitkeep
-dataset/*
+dataset*/*
 !testset/.gitkeep
 testset/* 
 src/.env
