@@ -28,23 +28,48 @@ Entre no diretório do projeto clonado:
 $ cd web-face-recognition
 ```
 
-Inicie o script de boostrap:
+### Bootstrap
+
+Inicie o script de boostrap, para verificar a instalação do docker e docker-compose. Caso já tenha devidamente instalado, pule para próxima etapa:
 
 ```console
 $ ./bootstrap.sh
 ```
 
+Em seguida, o script irá perguntar se deseja instalar dlib em sua máquina, digite 'Y' caso queira fazer testes fora do container.
+
+```console
+Do you want install dlib?
+Y
+```
+
+Os mesmos pacotes descritos no Dockerfile serão instalados.
+
+
 ### Cadastrando pessoas
 
 Dentro do diretório `dataset` crie o diretório com nome ou rótulo de quem deseja reconhecer
-com as fotos da pessoa. O ideal é ter a mesma quantidade de fotos para cada indivíduo.
+com as fotos da pessoa. O ideal é ter a mesma quantidade de fotos para cada pessoa.
+
+Rode `bash standard.sh` para *standardizar* os nomes das imagens. Ex:
+
+```console
+$ ls dataset/pessoa1
+$ fotoA12.jpeg perfil.jpeg qeqfaA.jpeg aaab_1234.JPEG
+$ bash standard.sh
+$ ls dataset/pessoa1
+$ 0001.jpeg 0002.jpeg 0003.jpeg 0004.jpeg
+```
+
+Esse pré-processamento será aplicado para todas as subpastas de `dataset`.
+
 
 ### Iniciando contêineres
 
 Construa as imagens para os contêineres:
 
 ```console
-$ make
+$ make run
 ```
 
 Para iniciar o contêiner em modo de desenvolvimento, use:
@@ -65,8 +90,6 @@ Parar execução dos contêineres:
 $ make stop
 ```
 
-> Funcionará tanto para contêineres de produção quanto para desenvolvimento.
-
 ### Treinamento
 
 Utilize:
@@ -74,6 +97,8 @@ Utilize:
 ```console
 $ make train
 ```
+
+Essa tarefa irá treinar todos os classificadores disponíveis.
 
 > O treinamento só é possível no modo de desenvolvimento, mas em modo de produção
 > o diretório `modelset` é montado em modo de somente-leitura.
