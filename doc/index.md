@@ -116,4 +116,6 @@ $ make test-clusters
 
 O workflow do makefile precisa seguir essa ordem:
 
-standard => encoding-raw => train-dbscan => clustering => encoding-clusters
+* standard.sh => make build => make run => make encoding => make train-svm
+
+* (DBSCAN) standard.sh => make build => make run => make encoding-raw => make train-dbscan => make clustering => make encoding-clusters
