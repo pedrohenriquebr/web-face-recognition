@@ -8,6 +8,7 @@ DATASETDIR := $(PWD)/dataset
 TESTSETDIR := $(PWD)/testset
 MODELSETDIR := $(PWD)/modelset
 BACKUP_FILENAME := backup-$(shell date +"%Y-%m-%d").zip
+TMPDIR := $${TMPDIR:-/dev/shm/web_face_recognition}
 
 .PHONY: build run run-dev stop status stop clean rmi rmi-all train terminal
 
@@ -82,12 +83,14 @@ clean-data:
 
 # Backing up $DATASETDIR, $MODELSETDIR, $TESTSETDIR
 backup:
-	@mkdir -p tmp ;\
-	cp -r $(DATASETDIR) $(MODELSETDIR) $(TESTSETDIR) ./tmp/ ;\
-	cd ./tmp ; zip -r $(BACKUP_FILENAME) * ;\
-	mv $(BACKUP_FILENAME) .. ;\
-	cd ..;\
-	rm -rf ./tmp
+	@mkdir -p $(TMPDIR) ;\
+	cp -r $(DATASETDIR) $(MODELSETDIR) $(TESTSETDIR) $(TMPDIR) ;\
+	cd $(TMPDIR) ;\
+	zip -r $(BACKUP_FILENAME) * ;\
+	mv $(BACKUP_FILENAME) $${OLDPWD} ;\
+	cd $${OLDPWD};\
+	rm -rf $(TMPDIR)
+
 # Remove web face base image only
 rmi:
 	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
@@ -125,3 +128,18 @@ test-clusters:
 	python3 clustering.py &&\
 	python3 encoding.py  clusters &&\
 	python3 prediction_dbscan.py
+
+encoding-raw: dataset-raw/*.jpeg
+	@docker-compose exec web python3 encoding.py raw
+
+train-dbscan: dataset-raw/encodings.csv
+	@docker-compose exec web python3 training_dbscan.py
+
+clustering: dataset-clusters/clusters.csv
+	@docker-compose exec web python3 clustering.py
+
+encoding-clusters:
+	@docker-compose exec web python3 encoding.py clusters
+
+pred-dbscan:
+	@docker-compose exec web python3 prediction_dbscan.py
