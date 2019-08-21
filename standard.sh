@@ -9,12 +9,10 @@ function standardize() {
         image_extension=$(file "$img" | cut -d':' -f 2 | cut -d' ' -f 2)
         image_extension=${image_extension// /}
         image_extension=${image_extension,,}
-        echo $image_extension
 
         case $image_extension in
         png | jpeg | jpg) echo "ok" ;;
         *)
-            echo "Invalid image $img:$image_extension"
             continue
             ;;
         esac

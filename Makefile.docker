@@ -39,15 +39,40 @@ all-svm-dev:
 	@make run-dev
 	@make encoding
 	@make train-svm
+	
+%.yml: $(WEB_FACE_RECOGNITION_DOCKERFILE)
+
+# Base image building
+define build_image
+	docker build -f $(1) $(DOCKER_BUILD_FLAGS) -t $(2) $(3)
+endef
+
+build: $(WEB_FACE_RECOGNITION_DOCKERFILE) src $(MODELSETDIR)
+	@$(call build_image,$(WEB_FACE_RECOGNITION_DOCKERFILE),pedrobraga/$(WEB_FACE_RECOGNITION_IMAGE):"$${TAG:-latest}",$(WEB_FACE_RECOGNITION_DIR))
 
 # Run production environment
-run:  $(MODELSETDIR)/*.clf
-	@python3 src/app.py
+run: production.yml $(MODELSETDIR)/*.clf
+	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
+
+# Development cycle
+restart: clean build 
 
 # Run  development environment
-run-dev: $(MODELSETDIR) 
+run-dev: docker-compose.yml $(MODELSETDIR) 
 	@echo "Running in development mode..."
-	@python3 src/app.py
+	docker-compose -f $< up --scale web="$${SCALE:-1}" -d
+
+# Stop containers
+stop: docker-compose.yml
+	@docker-compose stop
+
+# Get running containers status
+status: docker-compose.yml
+	@docker-compose ps
+
+# Remove the containers
+clean: docker-compose.yml
+	@docker-compose down
 
 # Remove files
 clean-data:
@@ -66,46 +91,55 @@ backup:
 	cd $${OLDPWD};\
 	rm -rf $(TMPDIR)
 
+# Remove web face base image only
+rmi:
+	@docker rmi $(WEB_FACE_RECOGNITION_IMAGE)
+
 # Extract face encodings from $DATASETDIR images and save it in encodings.csv
 encoding:
 	@echo "Extracting faces encodings..."
-	@python3 src/encoding.py
+	@docker-compose exec web python3 encoding.py
 	
 # Train all the face recognition models
 train: $(DATASETDIR)/encodings.csv
-	@python3 src/training_svm.py
-	@python3 src/training_knn.py
+	@docker-compose exec web python3 training_svm.py
+	@docker-compose exec web python3 training_knn.py
 
 # Train the knn model
 train-knn: $(DATASETDIR)/encodings.csv
-	@python3 src/training_knn.py
+	@docker-compose exec web python3 training_knn.py
 
 # Train the svm model 
 train-svm: $(DATASETDIR)/encodings.csv
-	@python3 src/training_svm.py
+	@docker-compose exec web python3 training_svm.py
+
+# Enter the terminal
+terminal:
+	@docker-compose exec web bash
+
 
 # standard => encoding-raw => train-dbscan => clustering => encoding-clusters
-
-standard:
-	@bash standard.sh
-
-clean-clusters:
-	@rm -rf ./dataset-clusters/*
+test-clusters:
+	bash standard.sh &&\
+	rm -rf ./dataset-clusters/* &&\
+	cd src &&\
+	python3 encoding.py raw &&\
+	python3 training_dbscan.py &&\
+	python3 clustering.py &&\
+	python3 encoding.py  clusters &&\
+	python3 prediction_dbscan.py
 
 encoding-raw: dataset-raw/*.jpeg
-	@python3 src/encoding.py raw
+	@docker-compose exec web python3 encoding.py raw
 
 train-dbscan: dataset-raw/encodings.csv
-	@python3 src/training_dbscan.py
+	@docker-compose exec web python3 training_dbscan.py
 
 clustering: dataset-clusters/clusters.csv
-	@python3 src/clustering.py
+	@docker-compose exec web python3 clustering.py
 
 encoding-clusters:
-	@python3 src/encoding.py clusters
-
-test-clusters:
-	@@(MAKE) standard encoding-raw clean-clusters train-dbscan clustering encoding-clusters
+	@docker-compose exec web python3 encoding.py clusters
 
 pred-dbscan:
-	@python3 src/prediction_dbscan.py
+	@docker-compose exec web python3 prediction_dbscan.py
