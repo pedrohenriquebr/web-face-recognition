@@ -105,7 +105,7 @@ encoding-clusters:
 	@python3 src/encoding.py clusters
 
 test-clusters:
-	@@(MAKE) standard encoding-raw clean-clusters train-dbscan clustering encoding-clusters
+	@make standard encoding-raw clean-clusters train-dbscan clustering encoding-clusters
 
 pred-dbscan:
 	@python3 src/prediction_dbscan.py
