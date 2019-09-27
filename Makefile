@@ -14,31 +14,31 @@ TMPDIR := $${TMPDIR:-/dev/shm/web_face_recognition}
 
 # All production environment tasks
 all:
-	@make build
-	@make run
+	@make standard
 	@make encoding
 	@make train
+	@make run
 
 # SVM training 
 all-svm:
-	@make build
-	@make run
+	@make standard
 	@make encoding
 	@make train-svm
-	
+	@make run
+
 # All development environment tasks
 all-dev:
-	@make build
-	@make run-dev
+	@make standard
 	@make encoding
 	@make train
+	@make run-dev
 
 # SVM training in development environment
 all-svm-dev:
-	@make build
-	@make run-dev
+	@make standard
 	@make encoding
 	@make train-svm
+	@make run-dev
 
 # Run production environment
 run:  $(MODELSETDIR)/*.clf
@@ -59,7 +59,7 @@ clean-data:
 # Backing up $DATASETDIR, $MODELSETDIR, $TESTSETDIR
 backup:
 	@mkdir -p $(TMPDIR) ;\
-	cp -r $(DATASETDIR) $(MODELSETDIR) $(TESTSETDIR) $(TMPDIR) ;\
+	cp -r dataset-raw $(DATASETDIR) $(MODELSETDIR) $(TESTSETDIR) $(TMPDIR) ;\
 	cd $(TMPDIR) ;\
 	zip -r $(BACKUP_FILENAME) * ;\
 	mv $(BACKUP_FILENAME) $${OLDPWD} ;\
