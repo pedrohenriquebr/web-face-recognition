@@ -4,8 +4,8 @@
 
 ### Requisitos
 
-* Docker 18.06+
-* Docker Compose 1.23.1+
+* Docker 18.06+ (opcional)
+* Docker Compose 1.23.1+ (opcional)
 * Python 3.3+
 * Linux (distro baseada no Debian)
 
@@ -63,13 +63,20 @@ $ 0001.jpeg 0002.jpeg 0003.jpeg 0004.jpeg
 
 Esse pré-processamento será aplicado para todas as subpastas de `dataset`.
 
+### Usando sem docker
 
-### Iniciando contêineres
+Para iniciar a API de reconhecimento, use:
+
+```console
+$ make run
+```
+
+### Usando Docker
 
 Construa as imagens para os contêineres:
 
 ```console
-$ make run
+$ make build
 ```
 
 Para iniciar o contêiner em modo de desenvolvimento, use:
@@ -101,9 +108,9 @@ $ make train
 Essa tarefa irá treinar todos os classificadores disponíveis.
 
 > O treinamento só é possível no modo de desenvolvimento, mas em modo de produção
-> o diretório `modelset` é montado em modo de somente-leitura.
+> o diretório `modelset` é montado em modo de somente-leitura. (Docker)
 
-### Removendo contêineres
+### Removendo contêineres (Docker)
 
 Para limpar os contêineres em execução, use:
 
