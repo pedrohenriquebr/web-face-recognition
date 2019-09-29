@@ -10,11 +10,12 @@ import settings
 import os
 import os.path
 import encoding
-
+import shutil
 
 MODELSET_DIR = os.getenv('MODELSET_DIR')
 DATASET_RAW_DIR = os.getenv('DATASET_RAW_DIR')
 DATASET_CLUSTERS_DIR = os.getenv('DATASET_CLUSTERS_DIR')
+DATASET_DIR = os.getenv('DATASET_DIR')
 
 
 model_path = os.path.join(MODELSET_DIR, 'trained_dbscan_model.clf')
@@ -35,7 +36,10 @@ for index in range(len(dt)):
     names_np.insert(0, [int(list_[0, 0]), name_dest])
     print('found: {},{}'.format(int(list_[0, 0]), name_dest))
 
-
+print(DATASET_DIR)
 with open(os.path.join(DATASET_CLUSTERS_DIR, 'names.csv'), 'wt') as f:
     for label, name in names_np:
         f.write('{},{}\n'.format(label, name))
+        shutil.rmtree(os.path.join(DATASET_DIR, str(name)), True)
+        shutil.copytree(os.path.join(DATASET_CLUSTERS_DIR, str(label)),
+                        os.path.join(DATASET_DIR, str(name)))

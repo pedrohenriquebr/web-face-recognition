@@ -26,15 +26,17 @@ all-svm:
 	@make train-svm
 	@make run
 
+all-dbscan:
+	@make standard
+	@make encoding-raw
+	@make clean-clusters
+	@make train-dbscan
+	@make clustering
+	@make encoding-clusters
+	@make pred-dbscan
+
 # All development environment tasks
 all-dev:
-	@make standard
-	@make encoding
-	@make train
-	@make run-dev
-
-# SVM training in development environment
-all-svm-dev:
 	@make standard
 	@make encoding
 	@make train-svm
@@ -42,11 +44,6 @@ all-svm-dev:
 
 # Run production environment
 run:  $(MODELSETDIR)/*.clf
-	@python3 src/app.py
-
-# Run  development environment
-run-dev: $(MODELSETDIR) 
-	@echo "Running in development mode..."
 	@python3 src/app.py
 
 # Remove files

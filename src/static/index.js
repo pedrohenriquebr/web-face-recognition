@@ -124,6 +124,8 @@ async function downloadImage(url) {
     headers: {
       'accept': 'image/jpeg'
     },
+    mode: 'cors',
+    cache: 'default',
     method: 'GET'
   }
   ).then(d => d.blob()).then(d => d);
@@ -157,7 +159,7 @@ function handleImageURL(e) {
 
   downloadImage(img_url.value).then(blob_file => {
     reader.readAsDataURL(blob_file);
-    sendImage(new File([blob_file],'img.jpeg'));
+    sendImage(new File([blob_file], 'img.jpeg'));
   });
 }
 
