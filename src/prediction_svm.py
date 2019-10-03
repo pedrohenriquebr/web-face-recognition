@@ -90,6 +90,9 @@ def predict_frame(X_img, svm_clf=None, model_path=None, model='hog'):
     result = [(pred, loc) for pred, loc  in zip(
         svm_clf.predict(faces_encodings), X_face_locations)]
 
+    result = [ item +tuple(face_recognition.face_landmarks(X_img,[list(item[1])])) for item in result ]
+    result  = [ {'label': item[0], 'location': item[1], 'landmarks': item[2] } for item in result ]
+    
     return result
 
 

@@ -206,25 +206,23 @@ function sendImage(img) {
 function drawFaceLocation(array) {
 
   size = 19;
+  blueFill = (img_height * img_width) / (500 * 350);
   if (big_picture) {
-    size = 19 * (img_height / 345);
+    size = 19 * (img_height / 300);
+
   }
   console.log('size: ' + size);
-  for (n in array) {
-    var persons = array[n];
-    var name = persons[0];
-    var face_location = persons[1];
+
+  array.forEach(person => {
+    let name = person.label;
+    let face_location = person.location;
+    let landmarks = person.landmarks;
     top_ = face_location[0];
     right_ = face_location[1];
     bottom_ = face_location[2];
     left_ = face_location[3];
     width = (left_ - right_);
     height = (top_ - bottom_);
-    console.log('top: ' + top_);
-    console.log('right: ' + right_);
-    console.log('bottom: ' + bottom_);
-    console.log('left: ' + left_);
-    console.log('name: ' + name);
     ctx.beginPath();
     ctx.lineWidth = "3";
     ctx.rect(right_, bottom_, width, height);
@@ -237,7 +235,13 @@ function drawFaceLocation(array) {
     ctx.fillText(name, left_ + (ctx.measureText(name).width / 2), (bottom_ + size));
     ctx.closePath();
     ctx.stroke();
-
-  }
-
+    Object.keys(landmarks).forEach(landmark => {
+      landmarks[landmark].forEach(pos => {
+        ctx.beginPath();
+        ctx.arc(pos[0], pos[1], blueFill, 0, 2 * Math.PI)
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+      })
+    });
+  });
 }
