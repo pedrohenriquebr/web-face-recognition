@@ -209,7 +209,7 @@ function drawFaceLocation(array) {
   blueFill = (img_height * img_width) / (500 * 350);
   if (big_picture) {
     size = 19 * (img_height / 300);
-
+    blueFill *= array.length > 2 ? 2 / array.length : 1.5;
   }
   console.log('size: ' + size);
 
@@ -225,6 +225,7 @@ function drawFaceLocation(array) {
     height = (top_ - bottom_);
     ctx.beginPath();
     ctx.lineWidth = "3";
+    ctx.strokeStyle = 'black';
     ctx.rect(right_, bottom_, width, height);
     ctx.closePath();
     ctx.stroke();
@@ -239,9 +240,22 @@ function drawFaceLocation(array) {
       landmarks[landmark].forEach(pos => {
         ctx.beginPath();
         ctx.arc(pos[0], pos[1], blueFill, 0, 2 * Math.PI)
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = 'white';
         ctx.fill();
       })
     });
+
+    ctx.closePath();
+    Object.keys(landmarks).forEach(landmark => {
+      ctx.beginPath();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      landmarks[landmark].forEach(pos => {
+        ctx.lineTo(pos[0], pos[1]);
+      })
+      ctx.stroke();
+    });
+    ctx.closePath();
+    
   });
 }
