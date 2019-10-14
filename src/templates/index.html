@@ -2,10 +2,10 @@
 <script type="text/javascript" src="{{url_for('static', filename='jquery.js') }}"></script>
 <link rel="stylesheet" href="{{url_for('static',filename='pretty_print.css')}}">
 <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
-<script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script>
+<!-- <script type="text/javascript" src="{{url_for('static',filename='index.js')}}"></script> -->
 <title>Serviço de reconhecimento facial</title>
 <center>
-<h1 id="bemvindo">Web Face Recognition</h1>
+    <h1 id="bemvindo">Web Face Recognition</h1>
 </center>
 
 <div id="container">
@@ -18,13 +18,14 @@
             </tr>
             <tr>
                 <td>
-                    <canvas id="imageCanvas" style="display:none;"></canvas>
+                    <canvas id="imageCanvas"></canvas>
                     <img id="canvasImg" alt="carregue uma foto!"></img>
                 </td>
                 <td>
                     <pre id='resultado'> </pre>
                 </td>
-            </tr><tr>
+            </tr>
+            <tr>
                 <td>
                     <p id="mensagem"> </p>
                 </td>
@@ -39,4 +40,100 @@
         <input type="text" id="imageURL" style="width:600px;" placeholder="Image URL">
         <input type="button" id="searchButton" value="Pesquisar imagem">
     </center>
+    <video style="display:none" autoplay></video>
+    <script>
+        // get video dom element
+        const canvas = document.getElementById('imageCanvas');
+        const video = document.querySelector('video');
+        var dataURLS = [];
+        // request access to webcam
+        navigator.mediaDevices.getUserMedia({ video: { width: 426, height: 240 } }).then((stream) => video.srcObject = stream);
+
+        // returns a frame encoded in base64
+        const getFrame = () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const data = canvas.toDataURL('image/png');
+            return data;
+        }
+
+        const drawFaceLocation2 = (array, ctx) => {
+            size = 19 * (ctx.width / 300);
+            blueFill = 3 * array.length > 2 ? 2 / array.length : 1.5;
+            console.log('size: ' + size);
+            console.log('Peguei esse contexto: ', ctx);
+            array.forEach(person => {
+                let name = person.label;
+                let face_location = person.location;
+                let landmarks = person.landmarks;
+                top_ = face_location[0];
+                right_ = face_location[1];
+                bottom_ = face_location[2];
+                left_ = face_location[3];
+                width = (left_ - right_);
+                height = (top_ - bottom_);
+                ctx.beginPath();
+                ctx.lineWidth = "3";
+                ctx.strokeStyle = 'black';
+                ctx.rect(right_, bottom_, width, height);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.font = size + 'px Arial';
+                ctx.fillStyle = 'red';
+                ctx.textAlign = 'center';
+                ctx.fillText(name, left_ + (ctx.measureText(name).width / 2), (bottom_ + size));
+                ctx.closePath();
+                ctx.stroke();
+                Object.keys(landmarks).forEach(landmark => {
+                    landmarks[landmark].forEach(pos => {
+                        ctx.beginPath();
+                        ctx.arc(pos[0], pos[1], blueFill, 0, 2 * Math.PI)
+                        ctx.fillStyle = 'white';
+                        ctx.fill();
+                    })
+                });
+
+                ctx.closePath();
+                Object.keys(landmarks).forEach(landmark => {
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 1;
+                    landmarks[landmark].forEach(pos => {
+                        ctx.lineTo(pos[0], pos[1]);
+                    })
+                    ctx.stroke();
+                });
+                ctx.closePath();
+
+            });
+        };
+
+        const WS_URL = 'ws://localhost:8080';
+        const FPS = 30;
+        const ws = new WebSocket(WS_URL);
+
+        ws.onopen = () => {
+            console.log(`Connected to ${WS_URL}`);
+            setTimeout(() => {
+                setInterval(() => {
+                    ws.send(getFrame());
+                }, 1000 / FPS)
+            }, 5000);
+        }
+
+        ws.onmessage = ev => {
+            console.log(JSON.parse(ev.data))
+            drawFaceLocation2(JSON.parse(ev.data), canvas.getContext("2d"));
+        };
+
+        ws.onerror = ev => {
+            console.log(ev);
+        };
+
+
+
+
+    </script>
 </div>
